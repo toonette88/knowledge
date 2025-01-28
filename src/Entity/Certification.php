@@ -16,52 +16,52 @@ class Certification
 
     #[ORM\ManyToOne(inversedBy: 'certifications')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?user $user_id = null;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'certifications')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?cursus $cursus_id = null;
+    private ?Cursus $cursus = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date_obtained = null;
+    private ?\DateTimeInterface $dateObtained = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUserId(): ?user
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?user $user_id): static
+    public function setUser(?User $user): static
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getCursusId(): ?cursus
+    public function getCursus(): ?Cursus
     {
-        return $this->cursus_id;
+        return $this->cursus;
     }
 
-    public function setCursusId(?cursus $cursus_id): static
+    public function setCursus(?Cursus $cursus): static
     {
-        $this->cursus_id = $cursus_id;
+        $this->cursus = $cursus;
 
         return $this;
     }
 
     public function getDateObtained(): ?\DateTimeInterface
     {
-        return $this->date_obtained;
+        return $this->dateObtained;
     }
 
-    public function setDateObtained(\DateTimeInterface $date_obtained): static
+    public function setDateObtained(\DateTimeInterface $dateObtained): static
     {
-        $this->date_obtained = $date_obtained;
+        $this->dateObtained = $dateObtained;
 
         return $this;
     }

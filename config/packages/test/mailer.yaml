@@ -1,0 +1,9 @@
+framework:
+    mailer:
+        dsn: 'null://null'
+
+services:
+    Symfony\Component\Mailer\Transport\TransportInterface: '@mailer.transport'
+    mailer.logger_message_listener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.terminate }

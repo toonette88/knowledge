@@ -30,32 +30,35 @@ class Cursus
 
     #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Category $category_id = null;
+    private ?Category $category = null;
 
     /**
      * @var Collection<int, OrderDetail>
      */
-    #[ORM\OneToMany(targetEntity: OrderDetail::class, mappedBy: 'cursus_id')]
-    private Collection $lesson_id;
+    #[ORM\OneToMany(targetEntity: OrderDetail::class, mappedBy: 'cursus')]
+    private Collection $orderDetails;
 
     /**
      * @var Collection<int, Progression>
      */
-    #[ORM\OneToMany(targetEntity: Progression::class, mappedBy: 'cursus_id')]
+    #[ORM\OneToMany(targetEntity: Progression::class, mappedBy: 'cursus')]
     private Collection $progressions;
 
     /**
      * @var Collection<int, Certification>
      */
-    #[ORM\OneToMany(targetEntity: Certification::class, mappedBy: 'cursus_id', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Certification::class, mappedBy: 'cursus', orphanRemoval: true)]
     private Collection $certifications;
 
     public function __construct()
     {
-        $this->lesson_id = new ArrayCollection();
+        $this->orderDetails = new ArrayCollection();
         $this->progressions = new ArrayCollection();
         $this->certifications = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
+
     }
+
 
     public function getId(): ?int
     {
@@ -70,7 +73,6 @@ class Cursus
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -82,7 +84,6 @@ class Cursus
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -94,7 +95,6 @@ class Cursus
     public function setPrice(int $price): static
     {
         $this->price = $price;
-
         return $this;
     }
 
@@ -106,46 +106,43 @@ class Cursus
     public function setCreatedAt(\DateTimeImmutable $created_at): static
     {
         $this->created_at = $created_at;
-
         return $this;
     }
 
-    public function getCategoryId(): ?Category
+    public function getCategory(): ?Category
     {
-        return $this->category_id;
+        return $this->category;
     }
 
-    public function setCategoryId(Category $category_id): static
+    public function setCategory(Category $category): static
     {
-        $this->category_id = $category_id;
-
+        $this->category = $category;
         return $this;
     }
 
     /**
      * @return Collection<int, OrderDetail>
      */
-    public function getLessonId(): Collection
+    public function getOrderDetails(): Collection
     {
-        return $this->lesson_id;
+        return $this->orderDetails;
     }
 
-    public function addLessonId(OrderDetail $lessonId): static
+    public function addOrderDetail(OrderDetail $orderDetail): static
     {
-        if (!$this->lesson_id->contains($lessonId)) {
-            $this->lesson_id->add($lessonId);
-            $lessonId->setCursusId($this);
+        if (!$this->orderDetails->contains($orderDetail)) {
+            $this->orderDetails->add($orderDetail);
+            $orderDetail->setCursus($this);
         }
 
         return $this;
     }
 
-    public function removeLessonId(OrderDetail $lessonId): static
+    public function removeOrderDetail(OrderDetail $orderDetail): static
     {
-        if ($this->lesson_id->removeElement($lessonId)) {
-            // set the owning side to null (unless already changed)
-            if ($lessonId->getCursusId() === $this) {
-                $lessonId->setCursusId(null);
+        if ($this->orderDetails->removeElement($orderDetail)) {
+            if ($orderDetail->getCursus() === $this) {
+                $orderDetail->setCursus(null);
             }
         }
 
@@ -164,7 +161,7 @@ class Cursus
     {
         if (!$this->progressions->contains($progression)) {
             $this->progressions->add($progression);
-            $progression->setCursusId($this);
+            $progression->setCursus($this);
         }
 
         return $this;
@@ -173,9 +170,8 @@ class Cursus
     public function removeProgression(Progression $progression): static
     {
         if ($this->progressions->removeElement($progression)) {
-            // set the owning side to null (unless already changed)
-            if ($progression->getCursusId() === $this) {
-                $progression->setCursusId(null);
+            if ($progression->getCursus() === $this) {
+                $progression->setCursus(null);
             }
         }
 
@@ -194,7 +190,7 @@ class Cursus
     {
         if (!$this->certifications->contains($certification)) {
             $this->certifications->add($certification);
-            $certification->setCursusId($this);
+            $certification->setCursus($this);
         }
 
         return $this;
@@ -203,9 +199,8 @@ class Cursus
     public function removeCertification(Certification $certification): static
     {
         if ($this->certifications->removeElement($certification)) {
-            // set the owning side to null (unless already changed)
-            if ($certification->getCursusId() === $this) {
-                $certification->setCursusId(null);
+            if ($certification->getCursus() === $this) {
+                $certification->setCursus(null);
             }
         }
 

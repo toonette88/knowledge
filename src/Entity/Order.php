@@ -7,6 +7,7 @@ use App\Enum\OrderStatus;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
@@ -17,31 +18,34 @@ class Order
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'commande_id')]
+    #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user__id = null;
+    private ?User $user = null;
 
     #[ORM\Column]
+    #[Assert\Positive(message: 'Le total doit être un nombre positif.')]
     private ?float $total = null;
 
     #[ORM\Column(type: 'string', enumType: OrderStatus::class)]
     private OrderStatus $status;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    #[Assert\NotNull(message: 'La date de création est obligatoire.')]
+    private ?\DateTimeImmutable $createdAt = null;
 
     /**
      * @var Collection<int, OrderDetail>
      */
-    #[ORM\OneToMany(targetEntity: OrderDetail::class, mappedBy: 'order_id', orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'order', targetEntity: OrderDetail::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $orderDetails;
 
-    #[ORM\OneToOne(mappedBy: 'commande_id', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'order', cascade: ['persist', 'remove'])]
     private ?Billing $billing = null;
 
     public function __construct()
     {
         $this->orderDetails = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -49,14 +53,14 @@ class Order
         return $this->id;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->user__id;
+        return $this->user;
     }
 
-    public function setUserId(?User $user__id): static
+    public function setUser(?User $user): static
     {
-        $this->user__id = $user__id;
+        $this->user = $user;
 
         return $this;
     }
@@ -78,20 +82,21 @@ class Order
         return $this->status;
     }
 
-    public function setStatus(OrderStatus $status): self
+    public function setStatus(OrderStatus $status): static
     {
         $this->status = $status;
+
         return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
@@ -108,7 +113,7 @@ class Order
     {
         if (!$this->orderDetails->contains($orderDetail)) {
             $this->orderDetails->add($orderDetail);
-            $orderDetail->setOrderId($this);
+            $orderDetail->setOrder($this);
         }
 
         return $this;
@@ -118,8 +123,8 @@ class Order
     {
         if ($this->orderDetails->removeElement($orderDetail)) {
             // set the owning side to null (unless already changed)
-            if ($orderDetail->getOrderId() === $this) {
-                $orderDetail->setOrderId(null);
+            if ($orderDetail->getOrder() === $this) {
+                $orderDetail->setOrder(null);
             }
         }
 
@@ -131,16 +136,15 @@ class Order
         return $this->billing;
     }
 
-    public function setBilling(Billing $billing): static
+    public function setBilling(?Billing $billing): static
     {
         // set the owning side of the relation if necessary
-        if ($billing->getCommandeId() !== $this) {
-            $billing->setCommandeId($this);
+        if ($billing && $billing->getOrder() !== $this) {
+            $billing->setOrder($this);
         }
 
         $this->billing = $billing;
 
         return $this;
     }
-
 }
