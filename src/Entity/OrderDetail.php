@@ -1,9 +1,9 @@
 <?php
-
 namespace App\Entity;
 
 use App\Repository\OrderDetailRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrderDetailRepository::class)]
 class OrderDetail
@@ -15,66 +15,67 @@ class OrderDetail
 
     #[ORM\ManyToOne(inversedBy: 'orderDetails')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Order $order_id = null;
+    private ?Order $order = null;
 
-    #[ORM\ManyToOne(inversedBy: 'lesson_id')]
-    private ?cursus $cursus_id = null;
+    #[ORM\ManyToOne(inversedBy: 'orderDetails')]
+    private ?Cursus $cursus = null;
 
     #[ORM\ManyToOne]
-    private ?lesson $lesson_id = null;
+    private ?Lesson $lesson = null;
 
     #[ORM\Column]
-    private ?float $unit_price = null;
+    #[Assert\Positive(message: 'Le prix unitaire doit être un nombre positif.')]
+    private ?float $unitPrice = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getOrderId(): ?Order
+    public function getOrder(): ?Order
     {
-        return $this->order_id;
+        return $this->order;
     }
 
-    public function setOrderId(?Order $order_id): static
+    public function setOrder(?Order $order): static
     {
-        $this->order_id = $order_id;
+        $this->order = $order;
 
         return $this;
     }
 
-    public function getCursusId(): ?cursus
+    public function getCursus(): ?Cursus
     {
-        return $this->cursus_id;
+        return $this->cursus;
     }
 
-    public function setCursusId(?cursus $cursus_id): static
+    public function setCursus(?Cursus $cursus): static
     {
-        $this->cursus_id = $cursus_id;
+        $this->cursus = $cursus;
 
         return $this;
     }
 
-    public function getLessonId(): ?lesson
+    public function getLesson(): ?Lesson
     {
-        return $this->lesson_id;
+        return $this->lesson;
     }
 
-    public function setLessonId(?lesson $lesson_id): static
+    public function setLesson(?Lesson $lesson): static
     {
-        $this->lesson_id = $lesson_id;
+        $this->lesson = $lesson;
 
         return $this;
     }
 
     public function getUnitPrice(): ?float
     {
-        return $this->unit_price;
+        return $this->unitPrice;
     }
 
-    public function setUnitPrice(float $unit_price): static
+    public function setUnitPrice(float $unitPrice): static
     {
-        $this->unit_price = $unit_price;
+        $this->unitPrice = $unitPrice;
 
         return $this;
     }

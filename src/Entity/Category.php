@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
 class Category
@@ -14,6 +15,7 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 55)]
+    #[Assert\NotBlank(message: "The category name should not be blank.")]
     private ?string $name = null;
 
     public function getId(): ?int

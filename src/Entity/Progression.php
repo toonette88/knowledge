@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ProgressionRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProgressionRepository::class)]
 class Progression
@@ -15,15 +16,21 @@ class Progression
 
     #[ORM\ManyToOne(inversedBy: 'progressions')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?user $user_id = null;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'progressions')]
-    private ?cursus $cursus_id = null;
+    private ?Cursus $cursus = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero(message: 'Le chapitre doit être un entier positif ou nul.')]
     private ?int $chapter = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Range(
+        min: 0,
+        max: 100,
+        notInRangeMessage: 'Le pourcentage doit être compris entre {{ min }} et {{ max }}.'
+    )]
     private ?float $percentage = null;
 
     public function getId(): ?int
@@ -31,26 +38,26 @@ class Progression
         return $this->id;
     }
 
-    public function getUserId(): ?user
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(?user $user_id): static
+    public function setUser(?User $user): static
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getCursusId(): ?cursus
+    public function getCursus(): ?Cursus
     {
-        return $this->cursus_id;
+        return $this->cursus;
     }
 
-    public function setCursusId(?cursus $cursus_id): static
+    public function setCursus(?Cursus $cursus): static
     {
-        $this->cursus_id = $cursus_id;
+        $this->cursus = $cursus;
 
         return $this;
     }

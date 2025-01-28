@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\BillingRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: BillingRepository::class)]
 class Billing
@@ -15,58 +16,60 @@ class Billing
 
     #[ORM\OneToOne(inversedBy: 'billing', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Order $commande_id = null;
+    private ?Order $order = null;
 
     #[ORM\OneToOne(inversedBy: 'billing', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?user $user_id = null;
+    private ?User $user = null;
 
     #[ORM\Column]
-    private ?int $stripe_payment_id = null;
+    #[Assert\NotBlank]
+    private ?int $stripePaymentId = null;
 
     #[ORM\Column]
+    #[Assert\Positive]
     private ?float $amount = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCommandeId(): ?Order
+    public function getOrder(): ?Order
     {
-        return $this->commande_id;
+        return $this->order;
     }
 
-    public function setCommandeId(Order $commande_id): static
+    public function setOrder(Order $order): static
     {
-        $this->commande_id = $commande_id;
+        $this->order = $order;
 
         return $this;
     }
 
-    public function getUserId(): ?user
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(user $user_id): static
+    public function setUser(User $user): static
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
 
     public function getStripePaymentId(): ?int
     {
-        return $this->stripe_payment_id;
+        return $this->stripePaymentId;
     }
 
-    public function setStripePaymentId(int $stripe_payment_id): static
+    public function setStripePaymentId(int $stripePaymentId): static
     {
-        $this->stripe_payment_id = $stripe_payment_id;
+        $this->stripePaymentId = $stripePaymentId;
 
         return $this;
     }
@@ -85,12 +88,12 @@ class Billing
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
