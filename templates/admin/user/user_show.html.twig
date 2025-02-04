@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'utilisateur{% endblock %}
+
+{% block body %}
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="card shadow-sm p-4" style="max-width: 500px; width: 100%; background-color: #f1f8fc;">
+            <div class="card-body">
+                <h5 class="card-title text-center" style="color: #00497c;">{{ user.name }} {{ user.firstName }}</h5>
+                <p class="card-text"><strong>Email :</strong> {{ user.email }}</p>
+                <p class="card-text"><strong>Date d'inscription :</strong> {{ user.createdAt|date('d/m/Y') }}</p>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <div>
+                        <a href="{{ path('admin_user_edit', {id: user.id}) }}" class="btn btn-warning text-white" style="background-color: #0074c7; border: none;">
+                            Modifier
+                        </a>
+                        <a href="{{ path('admin_user_delete', {id: user.id}) }}" class="btn btn-danger" style="background-color: #cd2c2e; border: none;">
+                            Supprimer
+                        </a>
+                    </div>
+                    <a href="{{ path('admin_user_list') }}" class="btn btn-secondary" style="background-color: #384050; border: none;">
+                        Retour à la liste
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
