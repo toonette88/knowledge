@@ -1,0 +1,26 @@
+doctrine:
+    dbal:
+        # Test database URL
+        url: '%env(resolve:DATABASE_URL)%'
+        # Configuration de la base de données spécifique pour les tests
+    orm:
+        # Cache pour l'environnement de test
+        query_cache_driver:
+            type: pool
+            pool: doctrine.test_query_cache_pool
+        result_cache_driver:
+            type: pool
+            pool: doctrine.test_result_cache_pool
+        metadata_cache_driver:
+            type: pool
+            pool: doctrine.test_metadata_cache_pool
+
+framework:
+    cache:
+        pools:
+            doctrine.test_query_cache_pool:
+                adapter: cache.adapter.array
+            doctrine.test_result_cache_pool:
+                adapter: cache.adapter.array
+            doctrine.test_metadata_cache_pool:
+                adapter: cache.adapter.array

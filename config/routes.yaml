@@ -7,3 +7,8 @@ controllers:
 test_email:
     path: /test-email
     controller: App\Controller\TestEmailController::sendTestEmail
+
+
+admin_user_list:
+    path: /admin/users
+    controller: App\Controller\Admin\UserManagementController::listUsers

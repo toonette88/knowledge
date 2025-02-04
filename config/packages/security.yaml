@@ -29,6 +29,8 @@ security:
                 lifetime: 31536000  # 1 year
                 path: /  # Applies across the entire app
 
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
 # Configuration for test environments (if needed)
 when@test:
     security:
