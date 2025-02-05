@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LessonRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -17,7 +19,7 @@ class Lesson
 
     #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Cursus $cursus = null;
+    private ?Course $course = null;
 
     #[ORM\Column(length: 55)]
     #[Assert\NotBlank(message: 'Le titre ne peut pas être vide.')]
@@ -27,26 +29,33 @@ class Lesson
     )]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: 'Le contenu ne peut pas être vide.')]
-    private ?string $content = null;
-
     #[ORM\Column]
     private ?int $price = null;
+
+    /**
+     * @var Collection<int, LessonContent>
+     */
+    #[ORM\OneToMany(targetEntity: LessonContent::class, mappedBy: 'lesson', orphanRemoval: true)]
+    private Collection $contents;
+
+    public function __construct()
+    {
+        $this->contents = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCursus(): ?Cursus
+    public function getCourse(): ?Course
     {
-        return $this->cursus;
+        return $this->course;
     }
 
-    public function setCursus(?Cursus $cursus): static
+    public function setCourse(?Course $course): static
     {
-        $this->cursus = $cursus;
+        $this->course = $course;
 
         return $this;
     }
@@ -63,18 +72,6 @@ class Lesson
         return $this;
     }
 
-    public function getContent(): ?string
-    {
-        return $this->content;
-    }
-
-    public function setContent(string $content): static
-    {
-        $this->content = $content;
-
-        return $this;
-    }
-
     public function getPrice(): ?int
     {
         return $this->price;
@@ -83,6 +80,36 @@ class Lesson
     public function setPrice(int $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LessonContent>
+     */
+    public function getContents(): Collection
+    {
+        return $this->contents;
+    }
+
+    public function addContent(LessonContent $content): static
+    {
+        if (!$this->contents->contains($content)) {
+            $this->contents->add($content);
+            $content->setLesson($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContent(LessonContent $content): static
+    {
+        if ($this->contents->removeElement($content)) {
+            // set the owning side to null (unless already changed)
+            if ($content->getLesson() === $this) {
+                $content->setLesson(null);
+            }
+        }
 
         return $this;
     }

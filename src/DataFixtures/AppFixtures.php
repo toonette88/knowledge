@@ -6,8 +6,10 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\User;
 use App\Entity\Category;
-use App\Entity\Cursus;
+use App\Entity\Course;
 use App\Entity\Lesson;
+use App\Entity\LessonContent;
+use Faker\Factory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
@@ -21,6 +23,8 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        $faker = Factory::create('fr_FR');
+
         // Création des catégories
         $categoriesData = [
             'Musique' => [
@@ -81,41 +85,39 @@ class AppFixtures extends Fixture
             ],
         ];
 
-        $content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sapien ligula, eleifend eget lobortis quis, viverra pretium dolor. Nunc dictum neque elit. Phasellus ut nisl lorem. Sed lobortis, magna id pulvinar tristique, mi dui aliquet sapien, a varius nisi tortor eu urna. Phasellus mollis elit non ornare molestie. In in ligula ac mauris rutrum accumsan. Integer faucibus ante tellus, sit amet ullamcorper quam accumsan id.
 
-Donec sodales aliquam interdum. Sed semper dolor eu aliquam porttitor. Morbi vel vulputate velit. Cras bibendum tellus feugiat, dapibus felis fringilla, sagittis nisl. Vestibulum congue nunc quis maximus vulputate. Mauris feugiat dolor at arcu mattis sollicitudin. Donec nec auctor nunc.
-
-Morbi tincidunt, metus sit amet pretium euismod, arcu tortor condimentum mauris, quis mattis nisi tellus non libero. Curabitur quis odio diam. Nulla et justo ex. Quisque tempor dui risus, ornare dictum odio viverra at. Proin sollicitudin varius ipsum at tincidunt. Aliquam a efficitur nisi. Donec sed ex vitae risus accumsan sodales. Donec lobortis dictum porttitor. Aliquam elit eros, tempus quis lorem id, tempor dapibus nibh.
-
-Duis at fringilla purus, eget ornare orci. Proin aliquet placerat leo, eget maximus urna rhoncus scelerisque. In hac habitasse platea dictumst. Interdum et malesuada fames ac ante ipsum primis in faucibus. Vivamus at metus lectus. Proin magna elit, venenatis eu nisi sed, semper eleifend ante. Maecenas viverra velit neque, non imperdiet tellus rutrum at. Etiam augue felis, molestie non semper vel, imperdiet eu eros. Pellentesque volutpat eros lacus. Pellentesque eu ultrices quam, vitae tincidunt nunc. Suspendisse blandit sapien luctus justo aliquet ultrices. Proin enim erat, pretium sit amet efficitur lacinia, ultrices et ex. Cras vel nunc massa. Ut maximus metus id tincidunt finibus. Aenean gravida convallis metus sit amet tincidunt. Interdum et malesuada fames ac ante ipsum primis in faucibus.
-
-Pellentesque ullamcorper pulvinar dui vitae rutrum. Nulla cursus nisl a elit venenatis mattis a ut sem. In fermentum eros diam, id tincidunt eros faucibus ac. Nulla cursus, turpis sit amet eleifend dictum, eros dolor sagittis erat, in hendrerit nulla velit a mi. Donec fermentum purus eu finibus dapibus. Suspendisse elit nunc, consequat eget ipsum a, cursus condimentum ligula. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec malesuada tincidunt augue, sit amet rhoncus justo euismod sit amet. Suspendisse vel purus dolor. Ut a elit luctus orci vehicula fermentum non non nisi.'
-        ;
-
-        foreach ($categoriesData as $categoryName => $cursusList) {
+        foreach ($categoriesData as $categoryName => $courseList) {
             $category = new Category();
             $category->setName($categoryName);
             $manager->persist($category);
 
-            foreach ($cursusList as $cursusData) {
-                $cursus = new Cursus();
-                $cursus->setTitle($cursusData['title']);
-                $cursus->setPrice($cursusData['price']);
-                $cursus->setCategory($category);
-                $cursus->setDescription('Parfait pour apprendre les bases');
-                $cursus->setCreatedAt(new \DateTimeImmutable());
-                $manager->persist($cursus);
+            foreach ($courseList as $courseData) {
+                $course = new Course();
+                $course->setTitle($courseData['title']);
+                $course->setPrice($courseData['price']);
+                $course->setCategory($category);
+                $course->setDescription('Parfait pour apprendre les bases');
+                $course->setCreatedAt(new \DateTimeImmutable());
+                $manager->persist($course);
 
-                foreach ($cursusData['lessons'] as $lessonData) {
+                foreach ($courseData['lessons'] as $lessonData) {
                     $lesson = new Lesson();
                     $lesson->setTitle($lessonData['title']);
                     $lesson->setPrice($lessonData['price']);
-                    $lesson->setContent($content);
-                    $lesson->setCursus($cursus);
+                    $lesson->setCourse($course);
                     $manager->persist($lesson);
+                
+                    // Ajouter plusieurs parties de contenu à chaque leçon
+                    for ($i = 1; $i <= 3; $i++) { // Ici, on génère 3 parties de contenu
+                        $lessonContent = new LessonContent();
+                        $lessonContent->setLesson($lesson);
+                        $lessonContent->setContent($faker->paragraphs(3, true)); // Génère 3 paragraphes
+                        $lessonContent->setPart($i); // Si tu as un champ "part" pour numéroter les contenus
+                        $manager->persist($lessonContent);                   
+                    }
                 }
             }
-        }
+        }   
 
         // Création de 10 utilisateurs
         for ($i = 0; $i < 10; $i++) {

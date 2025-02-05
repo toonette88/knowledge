@@ -5,7 +5,7 @@ namespace App\Tests\Entity;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Entity\OrderDetail;
-use App\Entity\Cursus;
+use App\Entity\Course;
 use App\Entity\Lesson;
 use App\Enum\OrderStatus;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,14 +22,14 @@ class OrderTest extends KernelTestCase
         $this->entityManager = static::getContainer()->get('doctrine')->getManager();
     }
 
-    // Test creating an Order with associated OrderDetails, Cursus, and Lesson objects
+    // Test creating an Order with associated OrderDetails, Course, and Lesson objects
     public function testCreateOrder()
     {
         // Retrieve an existing user from the database via fixtures (e.g., user with email 'user0@example.fr')
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => 'user0@example.fr']);
 
-        // Retrieve an existing Cursus and Lesson from the database via fixtures (ensure these objects exist)
-        $cursus = $this->entityManager->getRepository(Cursus::class)->findOneBy(['title' => 'Cursus d’initiation à la guitare']);
+        // Retrieve an existing Course and Lesson from the database via fixtures (ensure these objects exist)
+        $course = $this->entityManager->getRepository(Course::class)->findOneBy(['title' => 'Course d’initiation à la guitare']);
         $lesson = $this->entityManager->getRepository(Lesson::class)->findOneBy(['title' => 'Découverte de l’instrument']);
 
         // Create a new Order object and set its properties
@@ -39,10 +39,10 @@ class OrderTest extends KernelTestCase
               ->setStatus(OrderStatus::PENDING)        // Set the order status as PENDING
               ->setCreatedAt(new \DateTimeImmutable()); // Set the creation date of the order
 
-        // Create a new OrderDetail object and associate it with the order, cursus, and lesson
+        // Create a new OrderDetail object and associate it with the order, course, and lesson
         $orderDetail = new OrderDetail();
         $orderDetail->setOrder($order)                  // Associate the order detail with the order
-                    ->setCursus($cursus)               // Set the associated cursus
+                    ->setCourse($course)               // Set the associated course
                     ->setLesson($lesson)               // Set the associated lesson
                     ->setUnitPrice(50);                // Set the unit price for the order detail
 

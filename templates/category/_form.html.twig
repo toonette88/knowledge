@@ -1,0 +1,13 @@
+{{ form_start(form) }}
+
+    <div class="mb-3">
+        {{ form_label(form.name, 'Nom de la catégorie', {'label_attr': {'class': 'form-label fw-bold'}}) }}
+        {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'Saisissez le nom de la catégorie'}}) }}
+        {{ form_errors(form.name) }}
+    </div>
+
+    <button class="btn btn-primary btn-lg fw-bold px-4">
+        {{ button_label|default('Enregistrer') }}
+    </button>
+
+{{ form_end(form) }}

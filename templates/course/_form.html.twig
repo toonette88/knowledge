@@ -1,0 +1,25 @@
+{{ form_start(form) }}
+    <div class="mb-3">
+        {{ form_label(form.title, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.price, 'Prix', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.category, 'Catégorie', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.category, {
+            'attr': {'class': 'form-control'}
+        }) }}
+    </div>
+
+    <button class="btn btn-success">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form) }}

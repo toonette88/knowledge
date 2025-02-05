@@ -1,0 +1,23 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Créer une nouvelle catégorie{% endblock %}
+
+{% block admin_content %}
+    <div class="card shadow-sm p-4">
+        <h1 class="mb-4 text-primary">Créer une nouvelle catégorie</h1>
+
+        <div class="mb-3">
+            {{ include('category/_form.html.twig', {
+                'button_label': 'Créer la catégorie',
+                'button_class': 'btn btn-lg btn-primary fw-bold px-4',
+                'label_title': 'Nom de la catégorie'
+            }) }}
+        </div>
+
+        <div class="mt-3">
+            <a href="{{ path('app_category_index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+{% endblock %}

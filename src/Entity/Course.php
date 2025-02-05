@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\CursusRepository;
+use App\Repository\CourseRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CursusRepository::class)]
-class Cursus
+#[ORM\Entity(repositoryClass: CourseRepository::class)]
+class Course
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -35,19 +35,19 @@ class Cursus
     /**
      * @var Collection<int, OrderDetail>
      */
-    #[ORM\OneToMany(targetEntity: OrderDetail::class, mappedBy: 'cursus')]
+    #[ORM\OneToMany(targetEntity: OrderDetail::class, mappedBy: 'course')]
     private Collection $orderDetails;
 
     /**
      * @var Collection<int, Progression>
      */
-    #[ORM\OneToMany(targetEntity: Progression::class, mappedBy: 'cursus')]
+    #[ORM\OneToMany(targetEntity: Progression::class, mappedBy: 'course')]
     private Collection $progressions;
 
     /**
      * @var Collection<int, Certification>
      */
-    #[ORM\OneToMany(targetEntity: Certification::class, mappedBy: 'cursus', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Certification::class, mappedBy: 'course', orphanRemoval: true)]
     private Collection $certifications;
 
     public function __construct()
@@ -132,7 +132,7 @@ class Cursus
     {
         if (!$this->orderDetails->contains($orderDetail)) {
             $this->orderDetails->add($orderDetail);
-            $orderDetail->setCursus($this);
+            $orderDetail->setCourse($this);
         }
 
         return $this;
@@ -141,8 +141,8 @@ class Cursus
     public function removeOrderDetail(OrderDetail $orderDetail): static
     {
         if ($this->orderDetails->removeElement($orderDetail)) {
-            if ($orderDetail->getCursus() === $this) {
-                $orderDetail->setCursus(null);
+            if ($orderDetail->getCourse() === $this) {
+                $orderDetail->setCourse(null);
             }
         }
 
@@ -161,7 +161,7 @@ class Cursus
     {
         if (!$this->progressions->contains($progression)) {
             $this->progressions->add($progression);
-            $progression->setCursus($this);
+            $progression->setCourse($this);
         }
 
         return $this;
@@ -170,8 +170,8 @@ class Cursus
     public function removeProgression(Progression $progression): static
     {
         if ($this->progressions->removeElement($progression)) {
-            if ($progression->getCursus() === $this) {
-                $progression->setCursus(null);
+            if ($progression->getCourse() === $this) {
+                $progression->setCourse(null);
             }
         }
 
@@ -190,7 +190,7 @@ class Cursus
     {
         if (!$this->certifications->contains($certification)) {
             $this->certifications->add($certification);
-            $certification->setCursus($this);
+            $certification->setCourse($this);
         }
 
         return $this;
@@ -199,8 +199,8 @@ class Cursus
     public function removeCertification(Certification $certification): static
     {
         if ($this->certifications->removeElement($certification)) {
-            if ($certification->getCursus() === $this) {
-                $certification->setCursus(null);
+            if ($certification->getCourse() === $this) {
+                $certification->setCourse(null);
             }
         }
 

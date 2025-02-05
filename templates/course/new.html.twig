@@ -1,0 +1,11 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}New Course{% endblock %}
+
+{% block admin_content %}
+    <h1>Créer un nouveau Cursus</h1>
+
+    {{ include('course/_form.html.twig') }}
+
+    <a href="{{ path('app_course_index') }}">Retour à la liste</a>
+{% endblock %}
