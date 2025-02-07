@@ -4,52 +4,95 @@ namespace App\Tests\Entity;
 
 use App\Entity\Course;
 use App\Entity\Category;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use App\Entity\Certification;
+use App\Entity\OrderDetail;
+use App\Entity\Progression;
+use PHPUnit\Framework\TestCase;
 
-class CourseTest extends KernelTestCase
+class CourseTest extends TestCase
 {
-    private EntityManagerInterface $entityManager;
-
-    // Set up the test environment by booting the kernel and getting the Entity Manager
-    protected function setUp(): void
+    public function testCourseInstance()
     {
-        self::bootKernel();
-        $this->entityManager = static::getContainer()->get('doctrine')->getManager();
+        $course = new Course();
+
+        $this->assertInstanceOf(Course::class, $course);
+        $this->assertInstanceOf(\DateTimeImmutable::class, $course->getCreatedAt());
     }
 
-    // Test creating a Course object using existing fixtures and verifying it
-    public function testCreateCourseWithFixtures()
+    public function testSetAndGetTitle()
     {
-        // Retrieve an existing category from the database via fixtures
-        /** @var Category $category */
-        $category = $this->entityManager->getRepository(Category::class)->findOneBy(['name' => 'Musique']);
-        
-        // Assert that the category exists ("Musique" should be in the database)
-        $this->assertNotNull($category, 'The "Musique" category should exist.');
-
-        // Create a new Course object
         $course = new Course();
-        $course->setTitle('Course personnalisé')                // Set the title of the course
-               ->setDescription('Description du course personnalisé') // Set the description
-               ->setPrice(300)                                    // Set the price
-               ->setCreatedAt(new \DateTimeImmutable())            // Set the creation date
-               ->setCategory($category);                          // Associate the course with the "Musique" category
+        $course->setTitle('Symfony pour les débutants');
 
-        // Persist the Course object to the database
-        $this->entityManager->persist($course);
-        $this->entityManager->flush();
+        $this->assertSame('Symfony pour les débutants', $course->getTitle());
+    }
 
-        // Retrieve the saved course record from the database
-        $savedCourse = $this->entityManager->getRepository(Course::class)->find($course->getId());
+    public function testSetAndGetDescription()
+    {
+        $course = new Course();
+        $course->setDescription('Une formation complète sur Symfony.');
 
-        // Assert that the course record was successfully saved
-        $this->assertNotNull($savedCourse, 'The course should have been saved.');
+        $this->assertSame('Une formation complète sur Symfony.', $course->getDescription());
+    }
 
-        // Verify that the saved course contains the correct values
-        $this->assertEquals('Course personnalisé', $savedCourse->getTitle(), 'The title of the course should be correct.');
-        $this->assertEquals(300, $savedCourse->getPrice(), 'The price of the course should be correct.');
-        $this->assertEquals('Musique', $savedCourse->getCategory()->getName(), 'The associated category should be correct.');
-        $this->assertInstanceOf(\DateTimeImmutable::class, $savedCourse->getCreatedAt(), 'The creation date should be an instance of DateTimeImmutable.');
+    public function testSetAndGetPrice()
+    {
+        $course = new Course();
+        $course->setPrice(199);
+
+        $this->assertSame(199, $course->getPrice());
+    }
+
+    public function testSetAndGetCategory()
+    {
+        $course = new Course();
+        $category = new Category();
+        $course->setCategory($category);
+
+        $this->assertSame($category, $course->getCategory());
+    }
+
+    public function testAddAndRemoveOrderDetail()
+    {
+        $course = new Course();
+        $orderDetail = new OrderDetail();
+
+        $course->addOrderDetail($orderDetail);
+        $this->assertCount(1, $course->getOrderDetails());
+
+        $course->removeOrderDetail($orderDetail);
+        $this->assertCount(0, $course->getOrderDetails());
+    }
+
+    public function testAddAndRemoveProgression()
+    {
+        $course = new Course();
+        $progression = new Progression();
+
+        $course->addProgression($progression);
+        $this->assertCount(1, $course->getProgressions());
+
+        $course->removeProgression($progression);
+        $this->assertCount(0, $course->getProgressions());
+    }
+
+    public function testAddAndRemoveCertification()
+    {
+        $course = new Course();
+        $certification = new Certification();
+
+        $course->addCertification($certification);
+        $this->assertCount(1, $course->getCertifications());
+
+        $course->removeCertification($certification);
+        $this->assertCount(0, $course->getCertifications());
+    }
+
+    public function testToString()
+    {
+        $course = new Course();
+        $course->setTitle('Test Symfony');
+
+        $this->assertSame('Test Symfony', (string) $course);
     }
 }

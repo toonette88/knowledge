@@ -46,10 +46,14 @@ class LessonContent
         return $this->lesson;
     }
 
-    public function setLesson(?Lesson $lesson): static
+    public function setLesson(?Lesson $lesson): self
     {
         $this->lesson = $lesson;
-
+    
+        if ($lesson !== null) {
+            $lesson->addContent($this);
+        }
+    
         return $this;
     }
 
@@ -64,4 +68,5 @@ class LessonContent
 
         return $this;
     }
+    
 }

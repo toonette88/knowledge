@@ -4,11 +4,10 @@
 
 {% block admin_content %}
     <div class="container mt-4">
-        <h1 class="mb-4">Ajouter une nouvelle Leçon</h1>
+        <h3 class="mb-4">Ajouter une nouvelle Leçon</h3>
 
         {{ form_start(form) }}
-        
-        <!-- Form fields -->
+
         <div class="mb-3">
             {{ form_row(form.title) }}
         </div>
@@ -19,51 +18,53 @@
             {{ form_row(form.course) }}
         </div>
 
-        <!-- Contents (Dynamic content) -->
-        <div class="mb-3">
-            <div id="lesson_contents" data-prototype="{{ form_row(form.contents.vars.prototype)|e('html') }}">
-                {{ form_widget(form.contents) }}
+        <!-- Contenu de la leçon (ajout dynamique) -->
+        <fieldset class="mb-3">
+            <legend>Contenu de la leçon :</legend>
+            <div id="lesson_contents">
+                <!-- Les parties de contenu ajoutées s'afficheront ici -->
             </div>
-        </div>
+            <button type="button" id="add-content" class="btn btn-outline-primary">Ajouter une partie</button>
+        </fieldset>
 
-        <!-- Add new content button -->
+        <!-- Bouton de soumission -->
         <div class="mb-3">
-            <button type="button" id="add-content" class="btn btn-outline-primary">Ajouter une partie de contenu</button>
-        </div>
-
-        <!-- Submit Button -->
-        <div class="mb-3">
-            <button class="btn btn-primary">Enregistrer</button>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
         </div>
 
         {{ form_end(form) }}
 
-        <!-- Back to lessons list -->
         <div class="mt-3">
             <a href="{{ path('app_lesson_index') }}" class="btn btn-secondary">Retour à la liste des leçons</a>
         </div>
-
     </div>
 
     <script>
-        document.getElementById('add-content').addEventListener('click', function() {
-            let collectionHolder = document.querySelector('#lesson_contents');
-            let newIndex = collectionHolder.children.length;
-            let newForm = collectionHolder.dataset.prototype.replace(/__name__/g, newIndex);
+        document.addEventListener('DOMContentLoaded', function () {
+            let container = document.getElementById('lesson_contents');
+            let addButton = document.getElementById('add-content');
 
-            // Convertir la chaîne HTML en un élément DOM
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(newForm, 'text/html');
-            let newTextArea = doc.querySelector('textarea');
+            addButton.addEventListener('click', function () {
+                let index = container.dataset.index || 0;
 
-            // Appliquer les classes de Bootstrap et personnaliser la taille
-            if (newTextArea) {
-                newTextArea.classList.add('form-control', 'form-control-lg');
-                newTextArea.style.height = '200px';
-            }
+                let newField = document.createElement('div');
+                newField.classList.add('mb-3', 'content-item');
+                newField.innerHTML = `
+                    <label for="lesson_contents_${index}" class="form-label">Partie ${parseInt(index) + 1}</label>
+                    <textarea name="lesson_contents[${index}][content]" id="lesson_contents_${index}" class="form-control" rows="4"></textarea>
+                    <button type="button" class="btn btn-danger btn-sm remove-content mt-2">Supprimer</button>
+                `;
 
-            // Insérer l'élément dans le DOM
-            collectionHolder.insertAdjacentHTML('beforeend', doc.body.innerHTML);
+                container.appendChild(newField);
+                container.dataset.index = parseInt(index) + 1;
+            });
+
+            // Suppression d'un contenu ajouté
+            container.addEventListener('click', function (event) {
+                if (event.target.classList.contains('remove-content')) {
+                    event.target.parentElement.remove();
+                }
+            });
         });
     </script>
 {% endblock %}

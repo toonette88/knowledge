@@ -31,10 +31,10 @@ class CertificationTest extends KernelTestCase
 
         // Retrieve an existing course from the database via fixtures
         /** @var Course $course */
-        $course = $this->entityManager->getRepository(Course::class)->findOneBy(['title' => 'Course d’initiation à la guitare']);
+        $course = $this->entityManager->getRepository(Course::class)->findOneBy(['title' => 'Cursus d’initiation à la guitare']);
         
         // Assert that the course exists ("Course d’initiation à la guitare" should be in the database)
-        $this->assertNotNull($course, 'The course "Course d’initiation à la guitare" should exist.');
+        $this->assertNotNull($course, 'The course "Cursus d’initiation à la guitare" should exist.');
 
         // Create a new Certification object
         $certification = new Certification();

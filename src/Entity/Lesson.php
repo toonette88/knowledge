@@ -35,7 +35,7 @@ class Lesson
     /**
      * @var Collection<int, LessonContent>
      */
-    #[ORM\OneToMany(targetEntity: LessonContent::class, mappedBy: 'lesson', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: LessonContent::class, mappedBy: 'lesson', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $contents;
 
     public function __construct()
@@ -102,15 +102,15 @@ class Lesson
         return $this;
     }
 
-    public function removeContent(LessonContent $content): static
+    public function removeContent(LessonContent $content): self
     {
-        if ($this->contents->removeElement($content)) {
-            // set the owning side to null (unless already changed)
-            if ($content->getLesson() === $this) {
-                $content->setLesson(null);
-            }
+        if ($this->contents->contains($content)) {
+            $this->contents->removeElement($content);
+            // Optionnel : Dissocie le contenu de la leçon
+            $content->setLesson(null);
         }
-
+    
         return $this;
     }
+
 }

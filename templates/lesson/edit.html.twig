@@ -3,15 +3,73 @@
 {% block title %}Modifier la Leçon{% endblock %}
 
 {% block admin_content %}
-    <h1>Modifier la Leçon</h1>
+<div class="container">
+    <h3 class="text-primary mb-4">Modifier la Leçon</h3>
 
-    {{ form_start(form) }}
-        {{ form_row(form.title) }}
-        {{ form_row(form.number) }}
-        {{ form_row(form.course) }}
-        {{ form_row(form.price) }}
-        <button class="btn btn-primary">Enregistrer</button>
-    {{ form_end(form) }}
+    {{ include('lesson/_form.html.twig', {'button_label': 'Mettre à jour', 'class': 'btn btn-primary'}) }}
 
-    <a href="{{ path('admin_lesson_index') }}" class="btn btn-secondary">Retour à la liste des leçons</a>
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ path('app_lesson_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Retour à la liste
+        </a>
+        {{ include('lesson/_delete_form.html.twig', { 'class': 'btn btn-danger' }) }}
+    </div>
+
+    <!-- Onglets pour les contenus modifiables -->
+    {% if contents is not empty %}
+    <div class="mt-5">
+        <h4 class="text-secondary">Contenus de la Leçon</h4>
+
+        <ul class="nav nav-tabs mt-3" id="contentTabs" role="tablist">
+            {% for content in contents %}
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {% if loop.first %}active{% endif %}" 
+                            id="tab-{{ loop.index }}" 
+                            data-bs-toggle="tab" 
+                            data-bs-target="#content-{{ loop.index }}" 
+                            type="button" 
+                            role="tab">
+                        Partie {{ loop.index }}
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <div class="tab-content border p-4 shadow-sm bg-white" id="contentTabsContent">
+            {% for content in contents %}
+                <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="content-{{ loop.index }}" role="tabpanel">
+                    <h5 class="text-primary">Partie {{ loop.index }}</h5>
+
+                    <!-- Formulaire de modification du contenu -->
+                    {{ form_start(contentForms[loop.index0], { 'attr': {'class': 'form-horizontal'} }) }}
+                        <div class="mb-3">
+                            {{ form_row(contentForms[loop.index0].content, { 'attr': { 'class': 'form-control', 'placeholder': 'Contenu de la partie' } }) }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
+                    {{ form_end(contentForms[loop.index0]) }}
+
+                    <!-- Formulaire de suppression -->
+                    <div class="mt-3">
+                        <form action="{{ path('app_content_delete', { id: lesson.id, contentId: content.id }) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce contenu ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ content.id) }}">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Bouton pour ajouter un contenu -->
+    <div class="mt-4">
+        <a href="{{ path('app_lesson_add_content', { 'id': lesson.id }) }}" class="btn btn-outline-primary">
+            <i class="fas fa-plus"></i> Ajouter une partie de contenu
+        </a>
+    </div>
+</div>
 {% endblock %}

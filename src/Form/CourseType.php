@@ -20,6 +20,8 @@ class CourseType extends AbstractType
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',
+                'placeholder' => 'Sélectionner une catégorie',
+                'required' => true,
             ])
         ;
     }

@@ -4,51 +4,56 @@ namespace App\Tests\Entity;
 
 use App\Entity\Lesson;
 use App\Entity\Course;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use App\Entity\LessonContent;
+use PHPUnit\Framework\TestCase;
 
-class LessonTest extends KernelTestCase
+class LessonTest extends TestCase
 {
-    private EntityManagerInterface $entityManager;
-
-    // Set up the test environment by booting the kernel and getting the Entity Manager
-    protected function setUp(): void
+    public function testLessonInstance()
     {
-        self::bootKernel();
-        $this->entityManager = static::getContainer()->get('doctrine')->getManager();
+        $lesson = new Lesson();
+
+        $this->assertInstanceOf(Lesson::class, $lesson);
     }
 
-    // Test creating a Lesson object using existing fixtures and verifying it
-    public function testCreateLessonWithFixtures()
+    public function testSetAndGetCourse()
     {
-        // Retrieve an existing course from the database via fixtures
-        /** @var Course $course */
-        $course = $this->entityManager->getRepository(Course::class)->findOneBy(['title' => 'Course d’initiation à la guitare']);
-        
-        // Assert that the course exists ("Course d’initiation à la guitare" should be in the database)
-        $this->assertNotNull($course, 'The course "Course d’initiation à la guitare" should exist.');
-
-        // Create a new Lesson object
         $lesson = new Lesson();
-        $lesson->setCourse($course)                      // Associate the lesson with a course
-               ->setTitle('Leçon personnalisée')          // Set the lesson's title
-               ->setContent('Contenu de la leçon personnalisée')  // Set the lesson's content
-               ->setPrice(30);                             // Set the price of the lesson
+        $course = new Course();
+        $lesson->setCourse($course);
 
-        // Persist the Lesson object to the database
-        $this->entityManager->persist($lesson);
-        $this->entityManager->flush();
+        $this->assertSame($course, $lesson->getCourse());
+    }
 
-        // Retrieve the saved lesson record from the database
-        $savedLesson = $this->entityManager->getRepository(Lesson::class)->find($lesson->getId());
+    public function testSetAndGetTitle()
+    {
+        $lesson = new Lesson();
+        $lesson->setTitle('Introduction à Symfony');
 
-        // Assert that the lesson was successfully saved
-        $this->assertNotNull($savedLesson, 'The lesson should have been saved.');
+        $this->assertSame('Introduction à Symfony', $lesson->getTitle());
+    }
 
-        // Verify that the saved lesson contains the correct values
-        $this->assertEquals('Leçon personnalisée', $savedLesson->getTitle(), 'The title of the lesson should be correct.');
-        $this->assertEquals('Contenu de la leçon personnalisée', $savedLesson->getContent(), 'The content of the lesson should be correct.');
-        $this->assertEquals($course, $savedLesson->getCourse(), 'The associated course should be correct.');
-        $this->assertEquals(30, $savedLesson->getPrice(), 'The price of the lesson should be correct.');
+    public function testSetAndGetPrice()
+    {
+        $lesson = new Lesson();
+        $lesson->setPrice(49);
+
+        $this->assertSame(49, $lesson->getPrice());
+    }
+
+    public function testAddAndRemoveContent()
+    {
+        $lesson = new Lesson();
+        $content = new LessonContent();
+
+        // Ajouter un contenu
+        $lesson->addContent($content);
+        $this->assertCount(1, $lesson->getContents());
+        $this->assertSame($lesson, $content->getLesson());
+
+        // Supprimer le contenu
+        $lesson->removeContent($content);
+        $this->assertCount(0, $lesson->getContents());
+        $this->assertNull($content->getLesson());
     }
 }

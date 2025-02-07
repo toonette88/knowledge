@@ -4,7 +4,7 @@
 
 {% block admin_content %}
     <div class="container">
-        <h1 class="mb-4">Liste des Leçons</h1>
+        <h3 class="mb-4">Liste des Leçons</h3>
 
         <a href="{{ path('app_lesson_new') }}" class="btn btn-primary mb-3">
             <i class="fas fa-plus"></i> Ajouter une leçon
@@ -28,7 +28,7 @@
                         <td>{{ lesson.course and lesson.course.category ? lesson.course.category.name : 'Non défini' }}</td>
                         <td>{{ lesson.price }} €</td>
                         <td>
-                            <a href="{{ path('app_lesson_show', {'id': lesson.id, 'part': 1}) }}" class="btn btn-info btn-sm">
+                            <a href="{{ path('app_lesson_show', {'id': lesson.id }) }}" class="btn btn-info btn-sm">
                                 <i class="fas fa-eye"></i> Voir
                             </a>
                             <a href="{{ path('app_lesson_edit', {'id': lesson.id}) }}" class="btn btn-warning btn-sm">

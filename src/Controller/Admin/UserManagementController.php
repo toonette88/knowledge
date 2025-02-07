@@ -73,31 +73,6 @@ class UserManagementController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/users/{id}/edit', name: 'admin_user_edit')]
-    #[IsGranted('ROLE_ADMIN')]
-    public function editUser(Request $request, User $user, EntityManagerInterface $entityManager): Response
-    {
-        // Vérification de l'entité User
-        if (!$user) {
-            throw $this->createNotFoundException('Utilisateur non trouvé');
-        }
-    
-        $form = $this->createForm(UserType::class, $user);
-        $form->handleRequest($request);
-    
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-    
-            $this->addFlash('success', 'Utilisateur mis à jour avec succès.');
-            return $this->redirectToRoute('admin_user_edit', ['id' => $user->getId()]);
-        }
-    
-        return $this->render('admin/user/user_edit.html.twig', [
-            'user' => $user,
-            'form' => $form->createView(),
-        ]);
-    }
-
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/users/{id}/delete', name: 'admin_user_delete', methods: ['POST'])]
     public function deleteUser(Request $request, User $user, EntityManagerInterface $entityManager): Response
@@ -107,10 +82,17 @@ class UserManagementController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Utilisateur supprimé avec succès.');
+
+            // Déterminer la redirection en fonction de la page d'origine
+            $referer = $request->headers->get('referer');
+            if (str_contains($referer, '/admin/users/' . $user->getId() . '/show')) {
+                return $this->redirectToRoute('admin_users_list');
+            }
         }
 
         return $this->redirectToRoute('admin_users_list');
     }
+
 
     #[IsGranted('ROLE_USER')]
     #[Route('/user/profile', name: 'user_profile')]

@@ -47,12 +47,13 @@ class AppCustomAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // Redirection vers la page précédente ou vers une page par défaut
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
-            return new RedirectResponse($targetPath);
+        // Vérifie si l'utilisateur est un admin
+        if ($token->getUser()->hasRole('ROLE_ADMIN')) {
+            // Redirige vers le dashboard de l'admin
+            return new RedirectResponse($this->urlGenerator->generate('admin_dashboard'));
         }
 
-        // Redirection vers la page d'accueil (ou toute autre page)
+        // Si ce n'est pas un admin, redirige vers la page d'accueil
         return new RedirectResponse($this->urlGenerator->generate('app_home'));
     }
 
