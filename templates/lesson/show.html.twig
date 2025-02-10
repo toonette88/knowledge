@@ -1,0 +1,73 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}{{ lesson.title }} - Détails{% endblock %}
+
+{% block admin_content %}
+<div class="container mt-4">
+    <!-- En-tête avec Titre + Boutons -->
+    <div class="d-flex justify-content-between align-items-center">
+        <h3 class="text-primary fw-bold">{{ lesson.title }}</h3>
+        <div>
+            {{ include('lesson/_delete_form.html.twig', { 'lesson': lesson }) }}
+
+            <!-- Bouton Modifier -->
+            <a href="{{ path('app_lesson_edit', { id: lesson.id }) }}" class="btn btn-warning me-2">
+                <i class="fas fa-edit"></i> Modifier la leçon
+            </a>
+            <!-- Bouton Ajouter un contenu -->
+            <a href="{{ path('app_lesson_add_content', { id: lesson.id }) }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Ajouter un contenu
+            </a>
+        </div>
+    </div>
+
+    <!-- Informations Clés -->
+    <div class="card mt-3 p-3 shadow-sm">
+        <div class="row">
+            <div class="col-md-4">
+                <span class="badge bg-secondary p-2">{{ lesson.course and lesson.course.category ? lesson.course.category.name : 'Non défini' }}</span>
+            </div>
+            <div class="col-md-4">
+                <span class="badge bg-info p-2">{{ lesson.course.title }}</span>
+            </div>
+            <div class="col-md-4">
+                <span class="badge bg-success p-2 fs-5">{{ lesson.price }} €</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onglets Bootstrap -->
+    <ul class="nav nav-tabs mt-4" id="lessonTabs" role="tablist">
+        {% for content in contents %}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link {% if loop.first %}active{% endif %}" 
+                        id="tab-{{ loop.index }}" data-bs-toggle="tab" 
+                        data-bs-target="#content-{{ loop.index }}" type="button" 
+                        role="tab">
+                    Partie {{ loop.index }}
+                </button>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Contenu des onglets -->
+    <div class="tab-content mt-3">
+        {% for content in contents %}
+            <div class="tab-pane fade {% if loop.first %}show active{% endif %}" 
+                 id="content-{{ loop.index }}" role="tabpanel">
+                <div class="card p-3 shadow-sm">
+                    <h5 class="text-primary">Partie {{ loop.index }}</h5>
+                    <p class="mt-2 text-muted">{{ content.content|raw }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Bouton Retour -->
+    <div class="mt-4">
+        <a href="{{ path('app_lesson_index') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Retour aux leçons
+        </a>
+    </div>
+</div>
+{% endblock %}

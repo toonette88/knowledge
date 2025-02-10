@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -17,6 +18,16 @@ class Category
     #[ORM\Column(length: 55)]
     #[Assert\NotBlank(message: "The category name should not be blank.")]
     private ?string $name = null;
+
+     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Course", mappedBy="category", cascade={"remove"})
+     */
+    private $courses;
+
+    public function __construct()
+    {
+        $this->courses = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -33,5 +44,10 @@ class Category
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getCourses(): Collection
+    {
+        return $this->courses;
     }
 }

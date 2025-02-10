@@ -1,0 +1,58 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Tableau de Bord{% endblock %}
+
+{% block admin_content %}
+    <div class="container mt-4">
+        <h3 class="mb-4">Tableau de Bord Administratif</h3>
+
+        <div class="row">
+            <!-- Statistiques -->
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-header">Catégories</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ categoryCount }}</h5>
+                        <p class="card-text">Total des catégories.</p>
+                        <a href="{{ path('app_category_index') }}" class="btn btn-light">Voir</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-header">Cursus</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ courseCount }}</h5>
+                        <p class="card-text">Total des cursus disponibles.</p>
+                        <a href="{{ path('app_course_index') }}" class="btn btn-light">Voir</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card text-white bg-danger mb-3">
+                    <div class="card-header">Leçons</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ lessonCount }}</h5>
+                        <p class="card-text">Nombre total de leçons.</p>
+                        <a href="{{ path('app_lesson_index') }}" class="btn btn-light">Voir</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liens rapides -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <a href="{{ path('app_category_new') }}" class="btn btn-outline-primary btn-block">➕ Ajouter une Catégorie</a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ path('app_course_new') }}" class="btn btn-outline-success btn-block">➕ Ajouter un Cursus</a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ path('app_lesson_new') }}" class="btn btn-outline-danger btn-block">➕ Ajouter une Leçon</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

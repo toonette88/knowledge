@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin - {{ title|default('Dashboard') }}{% endblock %}
+
+{% block body %}
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <nav class="bg-dark text-white vh-100 p-3" style="width: 250px;">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ path('admin_dashboard') }}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ path('app_category_index') }}">Catégories</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ path('app_course_index') }}">Cursus</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ path('app_lesson_index') }}">Leçons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ path('app_home') }}">Retour au site</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ path('app_logout') }}">Déconnexion</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Contenu principal -->
+        <div class="flex-grow-1 p-4">
+            <header class="d-flex justify-content-between align-items-center mb-4">
+                <h1>{{ title|default('Dashboard') }}</h1>
+                <span class="badge bg-primary">Admin</span>
+            </header>
+
+            <div class="container">
+                {% block admin_content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

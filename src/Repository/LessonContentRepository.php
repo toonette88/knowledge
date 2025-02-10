@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\Cursus;
+use App\Entity\LessonContent;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Cursus>
+ * @extends ServiceEntityRepository<LessonContent>
  */
-class CursusRepository extends ServiceEntityRepository
+class LessonContentRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Cursus::class);
+        parent::__construct($registry, LessonContent::class);
     }
 
     //    /**
-    //     * @return Cursus[] Returns an array of Cursus objects
+    //     * @return LessonContent[] Returns an array of LessonContent objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
+    //        return $this->createQueryBuilder('l')
+    //            ->andWhere('l.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
+    //            ->orderBy('l.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Cursus
+    //    public function findOneBySomeField($value): ?LessonContent
     //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
+    //        return $this->createQueryBuilder('l')
+    //            ->andWhere('l.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()

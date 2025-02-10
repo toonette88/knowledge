@@ -2,14 +2,15 @@
 
 namespace App\Entity;
 
-use App\Repository\CursusRepository;
+use App\Entity\Category;
+use App\Repository\CourseRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CursusRepository::class)]
-class Cursus
+#[ORM\Entity(repositoryClass: CourseRepository::class)]
+class Course
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -25,29 +26,29 @@ class Cursus
     #[ORM\Column]
     private ?int $price = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    #[ORM\Column(name: "created_at", type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'courses')]
+    #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ?Category $category = null;
 
     /**
      * @var Collection<int, OrderDetail>
      */
-    #[ORM\OneToMany(targetEntity: OrderDetail::class, mappedBy: 'cursus')]
+    #[ORM\OneToMany(targetEntity: OrderDetail::class, mappedBy: 'course')]
     private Collection $orderDetails;
 
     /**
      * @var Collection<int, Progression>
      */
-    #[ORM\OneToMany(targetEntity: Progression::class, mappedBy: 'cursus')]
+    #[ORM\OneToMany(targetEntity: Progression::class, mappedBy: 'course')]
     private Collection $progressions;
 
     /**
      * @var Collection<int, Certification>
      */
-    #[ORM\OneToMany(targetEntity: Certification::class, mappedBy: 'cursus', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Certification::class, mappedBy: 'course', orphanRemoval: true)]
     private Collection $certifications;
 
     public function __construct()
@@ -56,9 +57,12 @@ class Cursus
         $this->progressions = new ArrayCollection();
         $this->certifications = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
-
     }
 
+    public function __toString(): string
+    {
+        return $this->title;
+    }
 
     public function getId(): ?int
     {
@@ -100,12 +104,12 @@ class Cursus
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
         return $this;
     }
 
@@ -114,7 +118,7 @@ class Cursus
         return $this->category;
     }
 
-    public function setCategory(Category $category): static
+    public function setCategory(?Category $category): self
     {
         $this->category = $category;
         return $this;
@@ -132,7 +136,7 @@ class Cursus
     {
         if (!$this->orderDetails->contains($orderDetail)) {
             $this->orderDetails->add($orderDetail);
-            $orderDetail->setCursus($this);
+            $orderDetail->setCourse($this);
         }
 
         return $this;
@@ -141,8 +145,8 @@ class Cursus
     public function removeOrderDetail(OrderDetail $orderDetail): static
     {
         if ($this->orderDetails->removeElement($orderDetail)) {
-            if ($orderDetail->getCursus() === $this) {
-                $orderDetail->setCursus(null);
+            if ($orderDetail->getCourse() === $this) {
+                $orderDetail->setCourse(null);
             }
         }
 
@@ -161,7 +165,7 @@ class Cursus
     {
         if (!$this->progressions->contains($progression)) {
             $this->progressions->add($progression);
-            $progression->setCursus($this);
+            $progression->setCourse($this);
         }
 
         return $this;
@@ -170,8 +174,8 @@ class Cursus
     public function removeProgression(Progression $progression): static
     {
         if ($this->progressions->removeElement($progression)) {
-            if ($progression->getCursus() === $this) {
-                $progression->setCursus(null);
+            if ($progression->getCourse() === $this) {
+                $progression->setCourse(null);
             }
         }
 
@@ -190,7 +194,7 @@ class Cursus
     {
         if (!$this->certifications->contains($certification)) {
             $this->certifications->add($certification);
-            $certification->setCursus($this);
+            $certification->setCourse($this);
         }
 
         return $this;
@@ -199,8 +203,8 @@ class Cursus
     public function removeCertification(Certification $certification): static
     {
         if ($this->certifications->removeElement($certification)) {
-            if ($certification->getCursus() === $this) {
-                $certification->setCursus(null);
+            if ($certification->getCourse() === $this) {
+                $certification->setCourse(null);
             }
         }
 

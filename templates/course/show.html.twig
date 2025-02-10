@@ -1,0 +1,46 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Détails du Cursus{% endblock %}
+
+{% block admin_content %}
+    <div class="card shadow-sm p-4">
+        <h3 class="mb-4 text-primary">Détails du cursus</h3>
+
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <th class="bg-light text-dark">ID</th>
+                    <td>{{ course.id }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light text-dark">Titre</th>
+                    <td>{{ course.title }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light text-dark">Description</th>
+                    <td>{{ course.description }}</td>
+                </tr>
+                <tr>
+                    <th class="bg-light text-dark">Prix</th>
+                    <td>{{ course.price }} €</td>
+                </tr>
+                <tr>
+                    <th class="bg-light text-dark">Date de création</th>
+                    <td>{{ course.createdAt ? course.createdAt|date('d/m/Y H:i') : 'Non disponible' }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ path('app_course_index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Retour à la liste
+            </a>
+            <div>
+                <a href="{{ path('app_course_edit', {'id': course.id}) }}" class="btn btn-warning me-2">
+                    <i class="bi bi-pencil"></i> Modifier
+                </a>
+                {{ include('course/_delete_form.html.twig', { 'class': 'btn btn-danger' }) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

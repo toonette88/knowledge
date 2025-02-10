@@ -20,7 +20,7 @@ class Certification
 
     #[ORM\ManyToOne(inversedBy: 'certifications')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Cursus $cursus = null;
+    private ?Course $course = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateObtained = null;
@@ -42,14 +42,14 @@ class Certification
         return $this;
     }
 
-    public function getCursus(): ?Cursus
+    public function getCourse(): ?Course
     {
-        return $this->cursus;
+        return $this->course;
     }
 
-    public function setCursus(?Cursus $cursus): static
+    public function setCourse(?Course $course): static
     {
-        $this->cursus = $cursus;
+        $this->course = $course;
 
         return $this;
     }

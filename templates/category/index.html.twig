@@ -1,0 +1,33 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Gestion des Catégories{% endblock %}
+
+{% block admin_content %}
+    <h3>Liste des Catégories</h3>
+
+    <a href="{{ path('app_category_new') }}" class="btn btn-primary mb-3">Ajouter une catégorie</a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th ></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+                <tr>
+                    <td>{{ category.name }}</td>
+                    <td class="d-flex justify-content-end gap-2">
+                        <a href="{{ path('app_category_edit', {'id': category.id}) }}" class="btn btn-warning">Éditer</a>
+                        {{ include('category/_delete_form.html.twig', { 'class': 'btn btn-danger' }) }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="2">Aucune catégorie disponible.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

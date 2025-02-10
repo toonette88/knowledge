@@ -1,0 +1,22 @@
+{% extends 'base_admin.html.twig' %}
+
+{% block title %}Ajouter un Contenu{% endblock %}
+
+{% block admin_content %}
+    <h3 class="text-primary">Ajouter une Partie de Contenu</h3>
+
+    {{ form_start(form, { 'attr': {'class': 'form-horizontal'} }) }}
+
+        <div class="mb-3">
+            {{ form_row(form.content, { 'attr': { 'class': 'form-control', 'placeholder': 'Contenu de la partie' } }) }}
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">Ajouter le Contenu</button>
+        </div>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_lesson_show', { 'id': lesson.id, 'part': 1 }) }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Retour à la leçon
+    </a>
+{% endblock %}

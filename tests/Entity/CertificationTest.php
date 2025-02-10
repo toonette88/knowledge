@@ -3,7 +3,7 @@
 namespace App\Tests\Entity;
 
 use App\Entity\Certification;
-use App\Entity\Cursus;
+use App\Entity\Course;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -29,17 +29,17 @@ class CertificationTest extends KernelTestCase
         // Assert that the user exists (user0@example.fr should be in the database)
         $this->assertNotNull($user, 'The user user0@example.fr should exist.');
 
-        // Retrieve an existing cursus from the database via fixtures
-        /** @var Cursus $cursus */
-        $cursus = $this->entityManager->getRepository(Cursus::class)->findOneBy(['title' => 'Cursus d’initiation à la guitare']);
+        // Retrieve an existing course from the database via fixtures
+        /** @var Course $course */
+        $course = $this->entityManager->getRepository(Course::class)->findOneBy(['title' => 'Cursus d’initiation à la guitare']);
         
-        // Assert that the cursus exists ("Cursus d’initiation à la guitare" should be in the database)
-        $this->assertNotNull($cursus, 'The cursus "Cursus d’initiation à la guitare" should exist.');
+        // Assert that the course exists ("Course d’initiation à la guitare" should be in the database)
+        $this->assertNotNull($course, 'The course "Cursus d’initiation à la guitare" should exist.');
 
         // Create a new Certification object
         $certification = new Certification();
         $certification->setUser($user)                   // Associate the certification with the user
-                      ->setCursus($cursus)               // Associate the certification with the cursus
+                      ->setCourse($course)               // Associate the certification with the course
                       ->setDateObtained(new \DateTimeImmutable()); // Set the date obtained for the certification
 
         // Persist the certification object in the database
@@ -54,7 +54,7 @@ class CertificationTest extends KernelTestCase
 
         // Verify that the saved certification object contains the correct values
         $this->assertEquals($user, $savedCertification->getUser(), 'The user associated with the certification should be correct.');
-        $this->assertEquals($cursus, $savedCertification->getCursus(), 'The cursus associated with the certification should be correct.');
+        $this->assertEquals($course, $savedCertification->getCourse(), 'The course associated with the certification should be correct.');
         $this->assertInstanceOf(\DateTimeImmutable::class, $savedCertification->getDateObtained(), 'The date obtained should be an instance of DateTimeImmutable.');
     }
 }

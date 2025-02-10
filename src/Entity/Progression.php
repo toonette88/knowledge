@@ -19,7 +19,7 @@ class Progression
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'progressions')]
-    private ?Cursus $cursus = null;
+    private ?Course $course = null;
 
     #[ORM\Column(nullable: true)]
     #[Assert\PositiveOrZero(message: 'Le chapitre doit être un entier positif ou nul.')]
@@ -50,14 +50,14 @@ class Progression
         return $this;
     }
 
-    public function getCursus(): ?Cursus
+    public function getCourse(): ?Course
     {
-        return $this->cursus;
+        return $this->course;
     }
 
-    public function setCursus(?Cursus $cursus): static
+    public function setCourse(?Course $course): static
     {
-        $this->cursus = $cursus;
+        $this->course = $course;
 
         return $this;
     }
