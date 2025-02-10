@@ -82,8 +82,8 @@ class LessonControllerTest extends WebTestCase
         ]);
         $client->submit($form);
 
-        $crawler = $client->request('GET', 'admin/lesson/13/edit');
-        $this->assertSelectorTextContains('h3', 'Modifier la Leçon');
+        $crawler = $client->request('GET', 'admin/lesson/13');
+        $this->assertSelectorTextContains('h3', 'Updated Lesson');
         $deleteForm = $crawler->selectButton('Supprimer')->form();
 
         // Soumet le formulaire de suppression
@@ -91,11 +91,11 @@ class LessonControllerTest extends WebTestCase
     
 
 
-        $this->assertResponseRedirects('/admin/lesson');
+        $this->assertResponseRedirects('/admin/lesson/');
         dump($client->getResponse()->getContent());
         $client->followRedirect();
 
-        $crawler = $client->request('GET', 'admin/lesson/13/edit');
+        $crawler = $client->request('GET', 'admin/lesson/13');
         $this->assertResponseStatusCodeSame(404);
     }
 }

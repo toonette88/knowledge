@@ -17,8 +17,8 @@ class LessonContent
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
-    #[ORM\ManyToOne(inversedBy: 'contents')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Lesson::class, inversedBy: 'contents')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Lesson $lesson = null;
 
     #[ORM\Column]
@@ -49,11 +49,11 @@ class LessonContent
     public function setLesson(?Lesson $lesson): self
     {
         $this->lesson = $lesson;
-    
+
         if ($lesson !== null) {
             $lesson->addContent($this);
         }
-    
+
         return $this;
     }
 

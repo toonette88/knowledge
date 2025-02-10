@@ -51,12 +51,7 @@
 
                     <!-- Formulaire de suppression -->
                     <div class="mt-3">
-                        <form action="{{ path('app_content_delete', { id: lesson.id, contentId: content.id }) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce contenu ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ content.id) }}">
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash"></i> Supprimer
-                            </button>
-                        </form>
+                        {{ include('lesson/_delete_form.html.twig', { 'lesson': lesson }) }}
                     </div>
                 </div>
             {% endfor %}

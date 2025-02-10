@@ -17,8 +17,8 @@ class Lesson
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Course::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private ?Course $course = null;
 
     #[ORM\Column(length: 55)]
@@ -104,10 +104,11 @@ class Lesson
 
     public function removeContent(LessonContent $content): self
     {
-        if ($this->contents->contains($content)) {
-            $this->contents->removeElement($content);
-            // Optionnel : Dissocie le contenu de la leçon
-            $content->setLesson(null);
+        if ($this->contents->removeElement($content)) {
+            // Vérifie si l'élément est bien retiré
+            if ($content->getLesson() === $this) {
+                $content->setLesson(null); // Dissocier proprement
+            }
         }
     
         return $this;
