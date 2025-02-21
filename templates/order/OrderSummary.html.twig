@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Récapitulatif de la commande{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="card p-4 shadow-lg rounded-3">
+        <h2 class="text-center text-primary">Récapitulatif de votre commande</h2>
+        <table class="table mt-3">
+            <thead class="bg-light">
+                <tr>
+                    <th>Produit</th>
+                    <th class="text-end">Prix</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detail in orderDetails %}
+                <tr>
+                    <td>
+                        {% if detail.course %}
+                            {{ detail.course.title }}
+                        {% elseif detail.lesson %}
+                            {{ detail.lesson.title }}
+                        {% endif %}
+                    </td>
+                    <td class="text-end">{{ detail.unitPrice }} €</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h4 class="text-end text-dark">Total : <span class="fw-bold">{{ order.total }} €</span></h4>
+        <div class="text-center mt-4">
+            <form method="post" action="{{ path('payment_create_session', {'orderId': order.id }) }}">
+                <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill shadow">Payer avec Stripe</button>
+            </form>        
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -80,7 +80,7 @@ class RegistrationTest extends WebTestCase
         $client->submit($form);
 
         // Vérifier qu'un message d'erreur est affiché
-        $this->assertSelectorTextContains('li', 'Les mots de passe doivent correspondre');
+        $this->assertSelectorTextContains('main li', 'Les mots de passe doivent correspondre');
     }
 
     // Test for failed registration with an already used email
@@ -108,7 +108,7 @@ class RegistrationTest extends WebTestCase
         $this->assertSelectorTextContains('h2', 'S\'inscrire'); // Ensure we stay on the registration page
 
         // Assert that the error message is shown
-        $this->assertSelectorTextContains('li', 'Il existe déjà un compte avec cet e-mail');
+        $this->assertSelectorTextContains('main li', 'Il existe déjà un compte avec cet e-mail');
     }
 
 

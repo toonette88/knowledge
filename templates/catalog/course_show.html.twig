@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ course.title }} - Détails de la formation
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-primary mb-4">{{ course.title }}</h1>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title text-secondary">Description</h5>
+            <p class="card-text">{{ course.description }}</p>
+
+            <h5 class="card-title text-secondary">Catégorie</h5>
+            <p class="card-text">{{ course.category.name }}</p>
+
+            <h5 class="card-title text-secondary">Prix</h5>
+            <p class="card-text">{{ course.price }} €</p>
+
+            <a href="{{ path('catalog') }}" class="btn btn-secondary mt-3">Retour au catalogue</a>
+
+            <!-- Bouton pour acheter tout le cursus -->
+        <form method="post" action="{{ path('order_create') }}" enctype="application/x-www-form-urlencoded">
+            <input type="hidden" name="courseId" value="{{ course.id }}">
+            <button type="submit" class="btn btn-success mt-3">Acheter le cursus complet</button>
+        </form>
+
+
+        </div>
+    </div>
+
+    <h2 class="text-primary">Leçons</h2>
+
+    {% if course.lessons|length > 0 %}
+        <div class="list-group">
+           {% for lesson in course.lessons %}
+                <div class="d-flex justify-content-between align-items-center list-group-item">
+                    <div>
+                        <h5 class="mb-1">{{ lesson.title }}</h5>
+                        <small class="text-muted">{{ lesson.price }} €</small>
+                    </div>
+                    <form method="post" action="{{ path('order_create') }}" enctype="application/x-www-form-urlencoded">
+                        <input type="hidden" name="lessonId" value="{{ lesson.id }}">
+                        <button type="submit" class="btn btn-outline-primary btn-sm">Acheter cette leçon</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Aucune leçon n'est disponible pour ce cours.</p>
+    {% endif %}
+</div>
+{% endblock %}

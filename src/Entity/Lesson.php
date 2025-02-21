@@ -17,7 +17,7 @@ class Lesson
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Course::class)]
+    #[ORM\ManyToOne(targetEntity: Course::class, inversedBy: 'lessons')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private ?Course $course = null;
 
@@ -53,7 +53,7 @@ class Lesson
         return $this->course;
     }
 
-    public function setCourse(?Course $course): static
+    public function setCourse(?Course $course): self
     {
         $this->course = $course;
 

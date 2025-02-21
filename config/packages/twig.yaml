@@ -1,5 +1,7 @@
 twig:
     file_name_pattern: '*.twig'
+    globals:
+        csp_header: "script-src 'self' 'sha256-...' https://js.stripe.com"
 
 when@test:
     twig:
