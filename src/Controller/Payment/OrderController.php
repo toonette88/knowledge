@@ -63,7 +63,7 @@ class OrderController extends AbstractController
     }
 
 
-    #[Route('/{id}', name: 'order_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'order_show',requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(int $id)
     {

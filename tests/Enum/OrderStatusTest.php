@@ -23,7 +23,7 @@ class OrderStatusTest extends TestCase
 
     public function testFromValue(): void
     {
-        $this->assertSame(OrderStatus::PAYED, OrderStatus::fromValue('Payée'));
+        $this->assertSame(OrderStatus::PAID, OrderStatus::fromValue('Payée'));
         $this->assertNull(OrderStatus::fromValue('Inconnu'));
     }
 }

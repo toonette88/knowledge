@@ -14,7 +14,7 @@ class CspMiddleware implements EventSubscriberInterface
         $response->headers->set('Content-Security-Policy', "script-src 'self' 'sha256-...' https://js.stripe.com;");
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         // Le listener sur l'événement de réponse HTTP
         return [
