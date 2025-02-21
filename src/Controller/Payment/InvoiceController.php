@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Payment\Controller;
+namespace App\Controller\Payment;
 
 use Dompdf\Dompdf;
 use Dompdf\Options;

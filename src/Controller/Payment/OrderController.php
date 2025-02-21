@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Payment\Controller;
+namespace App\Controller\Payment;
 
 use App\Entity\Course;
 use App\Entity\Lesson;
