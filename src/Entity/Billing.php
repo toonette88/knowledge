@@ -24,7 +24,7 @@ class Billing
 
     #[ORM\Column]
     #[Assert\NotBlank]
-    private ?int $stripePaymentId = null;
+    private ?string $stripePaymentId = null;
 
     #[ORM\Column]
     #[Assert\Positive]
@@ -67,7 +67,7 @@ class Billing
         return $this->stripePaymentId;
     }
 
-    public function setStripePaymentId(int $stripePaymentId): static
+    public function setStripePaymentId(string $stripePaymentId): static
     {
         $this->stripePaymentId = $stripePaymentId;
 

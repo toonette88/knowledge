@@ -33,6 +33,9 @@ class Course
     #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ?Category $category = null;
 
+    #[ORM\OneToMany(mappedBy: 'course', targetEntity: Lesson::class, cascade: ['persist', 'remove'])]
+    private Collection $lessons;
+
     /**
      * @var Collection<int, OrderDetail>
      */
@@ -53,6 +56,7 @@ class Course
 
     public function __construct()
     {
+        $this->lessons = new ArrayCollection();
         $this->orderDetails = new ArrayCollection();
         $this->progressions = new ArrayCollection();
         $this->certifications = new ArrayCollection();
@@ -122,6 +126,11 @@ class Course
     {
         $this->category = $category;
         return $this;
+    }
+
+    public function getLessons(): Collection
+    {
+        return $this->lessons;
     }
 
     /**
@@ -205,6 +214,27 @@ class Course
         if ($this->certifications->removeElement($certification)) {
             if ($certification->getCourse() === $this) {
                 $certification->setCourse(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addLesson(Lesson $lesson): self
+    {
+        if (!$this->lessons->contains($lesson)) {
+            $this->lessons[] = $lesson;
+            $lesson->setCourse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLesson(Lesson $lesson): self
+    {
+        if ($this->lessons->removeElement($lesson)) {
+            if ($lesson->getCourse() === $this) {
+                $lesson->setCourse(null);
             }
         }
 

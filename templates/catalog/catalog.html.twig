@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catalogue des Formations{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="mb-4 text-center">Catalogue des Formations</h1>
+    {% if app.session.flashbag.has('error') %}
+        <div class="alert alert-danger">
+            {% for message in app.session.flashbag.get('error') %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% for category in categories %}
+        <div class="mb-5">
+            <h2 class="mb-3 text-primary">{{ category.name }}</h2>
+            <div class="row">
+                {% for course in category.courses %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ course.title }}</h5>
+                                <p class="card-text">{{ course.description }}</p>
+                                <p class="card-text">
+                                    <strong>Prix :</strong> {{ course.price }} €
+                                </p>
+                                <a href="{{ path('course_show', { id: course.id }) }}" class="btn btn-primary">Voir les détails</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

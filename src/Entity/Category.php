@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -19,10 +20,9 @@ class Category
     #[Assert\NotBlank(message: "The category name should not be blank.")]
     private ?string $name = null;
 
-     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Course", mappedBy="category", cascade={"remove"})
-     */
-    private $courses;
+   
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Course::class, cascade: ['persist', 'remove'])]
+    private Collection $courses;
 
     public function __construct()
     {
@@ -49,5 +49,27 @@ class Category
     public function getCourses(): Collection
     {
         return $this->courses;
+    }
+
+    public function addCourse(Course $course): self
+    {
+        if (!$this->courses->contains($course)) {
+            $this->courses[] = $course;
+            $course->setCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCourse(Course $course): self
+    {
+        if ($this->courses->removeElement($course)) {
+            // set the owning side to null (unless already changed)
+            if ($course->getCategory() === $this) {
+                $course->setCategory(null);
+            }
+        }
+
+        return $this;
     }
 }
