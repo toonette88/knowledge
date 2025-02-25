@@ -22,12 +22,14 @@
             <a href="{{ path('catalog') }}" class="btn btn-secondary mt-3">Retour au catalogue</a>
 
             <!-- Bouton pour acheter tout le cursus -->
-        <form method="post" action="{{ path('order_create') }}" enctype="application/x-www-form-urlencoded">
-            <input type="hidden" name="courseId" value="{{ course.id }}">
-            <button type="submit" class="btn btn-success mt-3">Acheter le cursus complet</button>
-        </form>
-
-
+            {% if not hasPurchasedCourse %}
+                <form method="post" action="{{ path('order_create') }}" enctype="application/x-www-form-urlencoded">
+                    <input type="hidden" name="courseId" value="{{ course.id }}">
+                    <button type="submit" class="btn btn-success mt-3">Acheter le cursus complet</button>
+                </form>
+            {% else %}
+                <button class="btn btn-success mt-3" disabled>Acheter le cursus complet (déjà acheté)</button>
+            {% endif %}
         </div>
     </div>
 
@@ -41,10 +43,15 @@
                         <h5 class="mb-1">{{ lesson.title }}</h5>
                         <small class="text-muted">{{ lesson.price }} €</small>
                     </div>
-                    <form method="post" action="{{ path('order_create') }}" enctype="application/x-www-form-urlencoded">
-                        <input type="hidden" name="lessonId" value="{{ lesson.id }}">
-                        <button type="submit" class="btn btn-outline-primary btn-sm">Acheter cette leçon</button>
-                    </form>
+                    
+                    {% if not hasPurchasedCourse %}
+                        <form method="post" action="{{ path('order_create') }}" enctype="application/x-www-form-urlencoded">
+                            <input type="hidden" name="lessonId" value="{{ lesson.id }}">
+                            <button type="submit" class="btn btn-outline-primary btn-sm">Acheter cette leçon</button>
+                        </form>
+                    {% else %}
+                        <button class="btn btn-outline-primary btn-sm" disabled>Acheter cette leçon (déjà acheté)</button>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>

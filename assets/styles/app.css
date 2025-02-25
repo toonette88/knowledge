@@ -1,1 +1,16 @@
 
+.lesson-part {
+    margin-bottom: 30px;
+}
+
+.progress {
+    height: 25px;
+}
+
+.fas.fa-check-circle {
+    color: #0074c7;
+}
+
+.fas.fa-check-circle.text-muted {
+    color: #ccc;
+}

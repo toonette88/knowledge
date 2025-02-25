@@ -18,7 +18,7 @@ class Billing
     #[ORM\JoinColumn(nullable: false)]
     private ?Order $order = null;
 
-    #[ORM\OneToOne(inversedBy: 'billing', cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'billings')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 

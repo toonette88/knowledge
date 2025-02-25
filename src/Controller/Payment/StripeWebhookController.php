@@ -29,51 +29,51 @@ class StripeWebhookController extends AbstractController
         }
 
         try {
-            $event = Event::constructFrom(json_decode($payload, true));
-        } catch (\UnexpectedValueException $e) {
-            $logger->error('Webhook error: Invalid payload');
-            return new JsonResponse(['error' => 'Invalid payload'], 400);
-        }
-
-        // Vérification de la signature webhook
-        try {
             Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
-            $event = \Stripe\Webhook::constructEvent(
-                $payload,
-                $sigHeader,
-                $secret
-            );
+            $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $secret);
         } catch (\Exception $e) {
-            $logger->error('Webhook signature verification failed: '. $e->getMessage());
+            $logger->error('Webhook signature verification failed: ' . $e->getMessage());
             return new JsonResponse(['error' => 'Invalid signature'], 400);
         }
 
-        // Traiter les événements Stripe
+        // Logs pour vérifier les données de l'événement
+        $logger->info('Stripe webhook received', ['event' => $event]);
+
         if ($event->type === 'checkout.session.completed') {
             $session = $event->data->object;
             $orderId = $session->metadata->order_id ?? null;
-
-            $orderId = $session->metadata->order_id ?? null;
+            
             if (!$orderId) {
-                $logger->error('Metadata order_id is missing');
+                $logger->error('Metadata order_id is missing in session', ['session' => $session]);
                 return new JsonResponse(['error' => 'Metadata order_id is missing'], 400);
             }
 
             $order = $em->getRepository(Order::class)->find($orderId);
-            if ($order) {
-                $order->setStatus(OrderStatus::PAID);
-
-                // Création de la facture
-                $billing = new Billing();
-                $billing->setOrder($order);
-                $billing->setUser($order->getUser());
-                $billing->setStripePaymentId((string) $session->payment_intent);
-                $billing->setAmount($order->getTotal());
-                $billing->setCreatedAt(new \DateTimeImmutable());
-
-                $em->persist($billing);
-                $em->flush();
+            if (!$order) {
+                $logger->error('Order not found for order_id', ['order_id' => $orderId]);
+                return new JsonResponse(['error' => 'Order not found'], 404);
             }
+
+            // Mise à jour du statut de la commande
+            $order->setStatus(OrderStatus::PAID);
+            $em->persist($order);
+            $em->flush();
+
+            // Création de la facturation
+            $billing = new Billing();
+            $billing->setOrder($order);
+            $billing->setUser($order->getUser());
+            $billing->setStripePaymentId((string) $session->payment_intent);
+            $billing->setAmount($order->getTotal());
+            $billing->setCreatedAt(new \DateTimeImmutable());
+
+            // Persistance de la facturation
+            $em->persist($billing);
+            $em->flush();
+
+            $logger->info('Payment processed successfully', ['order_id' => $orderId, 'billing' => $billing]);
+        } else {
+            $logger->info('Event type not handled', ['event_type' => $event->type]);
         }
 
         return new JsonResponse(['status' => 'success']);

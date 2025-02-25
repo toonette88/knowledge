@@ -7,27 +7,26 @@ use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Order;
+use App\Entity\Billing; // Assurez-vous d'importer l'entité Billing
 use Doctrine\ORM\EntityManagerInterface;
 
 class InvoiceController extends AbstractController
 {
     private $entityManager;
 
-    // Injecter EntityManagerInterface dans le constructeur
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/invoice/download/{orderId}', name: 'invoice_download')]
-    public function downloadInvoice(int $orderId): Response
+    #[Route('/invoice/download/{billingId}', name: 'invoice_download', requirements: ['billingId' => '\d+'])]
+    public function downloadInvoice(int $billingId): Response
     {
-        // Récupérer la commande en base de données
-        $order = $this->entityManager->getRepository(Order::class)->find($orderId);
+        // Récupérer l'information de facturation en base de données
+        $billing = $this->entityManager->getRepository(Billing::class)->find($billingId);
 
-        if (!$order) {
-            throw $this->createNotFoundException('Commande introuvable.');
+        if (!$billing) {
+            throw $this->createNotFoundException('Facture introuvable.');
         }
 
         // Configuration de Dompdf
@@ -37,7 +36,8 @@ class InvoiceController extends AbstractController
 
         // Génération du HTML de la facture
         $html = $this->renderView('invoice/invoice.html.twig', [
-            'order' => $order,
+            'billing' => $billing, // Vous passez l'objet Billing ici
+            'isDownload' => true,
         ]);
 
         // Charger le HTML dans Dompdf
@@ -48,8 +48,23 @@ class InvoiceController extends AbstractController
         $dompdf->render();
 
         // Retourner la réponse avec le PDF en téléchargement
-        return new Response($dompdf->stream('facture-commande-' . $order->getId() . '.pdf', [
+        return new Response($dompdf->stream('facture-' . $billing->getId() . '.pdf', [
             "Attachment" => true, // "true" permet de forcer le téléchargement
-        ]));
+        ]));        
+    }
+
+    #[Route('/invoice/stream/{billingId}', name: 'invoice_stream', requirements: ['billingId' => '\d+'])]
+    public function streamInvoice(int $billingId): Response
+    {
+        $billing = $this->entityManager->getRepository(Billing::class)->find($billingId);
+
+        if (!$billing){
+            throw $this->createNotFoundExeption('Facture introuvable');
+        }
+
+        return $this->render('invoice/invoice.html.twig', [
+            'billing' =>$billing,
+            'isDownload' => false,
+        ]);
     }
 }

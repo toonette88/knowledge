@@ -21,6 +21,10 @@ class Progression
     #[ORM\ManyToOne(inversedBy: 'progressions')]
     private ?Course $course = null;
 
+    #[ORM\ManyToOne(targetEntity: Lesson::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Lesson $lesson = null;
+
     #[ORM\Column(nullable: true)]
     #[Assert\PositiveOrZero(message: 'Le chapitre doit être un entier positif ou nul.')]
     private ?int $chapter = null;
@@ -31,7 +35,7 @@ class Progression
         max: 100,
         notInRangeMessage: 'Le pourcentage doit être compris entre {{ min }} et {{ max }}.'
     )]
-    private ?float $percentage = null;
+    private ?int $percentage = null;
 
     public function getId(): ?int
     {
@@ -59,6 +63,17 @@ class Progression
     {
         $this->course = $course;
 
+        return $this;
+    }
+
+    public function getLesson(): ?Lesson
+    {
+        return $this->lesson;
+    }
+
+    public function setLesson(?Lesson $lesson): static
+    {
+        $this->lesson = $lesson;
         return $this;
     }
 

@@ -15,7 +15,7 @@ security:
         main:
             pattern: ^/
             custom_authenticators:
-                - App\Security\AppCustomAuthenticator  # Use custom authenticator
+                - App\Security\AppCustomAuthenticator
             form_login:
                 login_path: app_login  # Route to the login page
                 check_path: app_login  # Route to submit the login form

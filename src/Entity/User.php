@@ -46,8 +46,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $orders;
 
-    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
-    private ?Billing $billing = null;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Billing::class)]
+    private Collection $billings;
 
     #[ORM\OneToMany(targetEntity: Progression::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $progressions;
@@ -62,6 +62,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->createdAt = new \DateTimeImmutable(); // Correction de l'attribut
         $this->orders = new ArrayCollection();
+        $this->billings = new ArrayCollection();
         $this->progressions = new ArrayCollection();
         $this->certifications = new ArrayCollection();
     }
@@ -207,9 +208,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getBilling(): ?Billing
+    public function getBillings(): Collection
     {
-        return $this->billing;
+        return $this->billings;
     }
 
     public function setBilling(Billing $billing): static
