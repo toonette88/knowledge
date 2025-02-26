@@ -19,6 +19,9 @@ class StripeWebhookController extends AbstractController
     #[Route('/webhook/stripe', name: 'stripe_webhook', methods: ['POST'])]
     public function handleStripeWebhook(Request $request, EntityManagerInterface $em, LoggerInterface $logger): JsonResponse
     {
+        $logger->info(' Webhook Stripe reçu');
+        dump(' Webhook Stripe reçu');
+
         $payload = $request->getContent();
         $sigHeader = $request->headers->get('stripe-signature');
         $secret = $_ENV['STRIPE_WEBHOOK_SECRET'];
@@ -37,27 +40,40 @@ class StripeWebhookController extends AbstractController
         }
 
         // Logs pour vérifier les données de l'événement
-        $logger->info('Stripe webhook received', ['event' => $event]);
+        $logger->info(' Type d\'événement Stripe reçu', ['event_type' => $event->type]);
+        dump(' Type d\'événement Stripe reçu', $event->type);
 
         if ($event->type === 'checkout.session.completed') {
             $session = $event->data->object;
             $orderId = $session->metadata->order_id ?? null;
             
+            $logger->info(' Récupération de order_id depuis metadata', ['order_id' => $orderId]);
+            dump(' order_id extrait', $orderId);
+
             if (!$orderId) {
                 $logger->error('Metadata order_id is missing in session', ['session' => $session]);
                 return new JsonResponse(['error' => 'Metadata order_id is missing'], 400);
             }
 
             $order = $em->getRepository(Order::class)->find($orderId);
-            if (!$order) {
-                $logger->error('Order not found for order_id', ['order_id' => $orderId]);
-                return new JsonResponse(['error' => 'Order not found'], 404);
-            }
+            dump('🔍 Order ID reçu dans le webhook', $orderId);
 
+            if (!$order) {
+                $logger->error(' Commande non trouvée', ['order_id' => $orderId]);
+                dump(' Commande non trouvée pour order_id', $orderId);
+            } else {
+                $logger->info(' Commande trouvée', ['order_id' => $order->getId(), 'status' => $order->getStatus()]);
+                dump(' Commande trouvée', $order->getId(), $order->getStatus());
+            }
+            
             // Mise à jour du statut de la commande
             $order->setStatus(OrderStatus::PAID);
             $em->persist($order);
             $em->flush();
+            
+            $logger->info(' Statut de la commande mis à jour', ['order_id' => $order->getId(), 'nouveau_statut' => $order->getStatus()]);
+            dump(' Statut mis à jour', $order->getStatus());
+            
 
             // Création de la facturation
             $billing = new Billing();

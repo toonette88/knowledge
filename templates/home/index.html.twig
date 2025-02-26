@@ -1,12 +1,34 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
-
 {% block body %}
-    <h2> Page authentifiée </h2>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-success text-center">{{ message }}</div>
-        {% endfor %}
-    </div>
+    <div class="hero"></div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; /* Empêche le scroll */
+        }
+
+        .hero {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: url("{{ asset('images/home.png') }}") no-repeat center center;
+            background-size: cover;
+            z-index: -1; /* Place l'image derrière le contenu */
+        }
+
+        /* Ajuste le body pour ne pas couvrir la navbar */
+        main {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
 {% endblock %}
