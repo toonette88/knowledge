@@ -5,6 +5,9 @@
 {% block admin_content %}
     <h3 class="mb-4">Liste des Cursus</h3>
 
+    <a href="{{ path('app_course_new') }}" class="btn btn-primary">Créer un nouveau cursus</a>
+
+
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -40,7 +43,5 @@
         </table>
     </div>
 
-    <div class="mt-4">
-        <a href="{{ path('app_course_new') }}" class="btn btn-primary">Créer un nouveau cursus</a>
-    </div>
+   
 {% endblock %}

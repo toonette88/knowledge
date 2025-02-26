@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Repository\CategoryRepository;
 use App\Repository\CourseRepository;
 use App\Repository\LessonRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -13,12 +14,13 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard', name: 'dashboard')]
-    public function index(CategoryRepository $categoryRepo, CourseRepository $courseRepo, LessonRepository $lessonRepo)
+    public function index(CategoryRepository $categoryRepo, CourseRepository $courseRepo, LessonRepository $lessonRepo, UserRepository $userRepo)
     {
         return $this->render('admin/dashboard.html.twig', [
             'categoryCount' => $categoryRepo->count([]),
             'courseCount' => $courseRepo->count([]),
             'lessonCount' => $lessonRepo->count([]),
+            'userCount' => $userRepo->count([]),
         ]);
     }
 }
