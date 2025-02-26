@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certification de {{ certification.course.title }}</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f8fc;
+            color: #384050;
+        }
+
+        .certificate-container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            border: 3px solid #0074c7;
+        }
+
+        .certificate-header {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #0074c7;
+            margin-bottom: 15px;
+        }
+
+        .certificate-subtitle {
+            font-size: 1.3em;
+            font-style: italic;
+            color: #0074c7;
+            margin-bottom: 30px;
+        }
+
+        .certificate-content {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .user-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #0074c7;
+            margin-top: 10px;
+        }
+
+        .course-name {
+            font-size: 1.3em;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .date-issued {
+            font-size: 1.1em;
+            margin-top: 30px;
+            color: #384050;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 1em;
+            color: #384050;
+        }
+
+        .signature {
+            margin-top: 40px;
+            font-size: 1.1em;
+            color: #0074c7;
+            font-weight: bold;
+        }
+
+        .logo {
+            width: 80px;
+            margin-bottom: 15px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="certificate-container">
+        <img src="{{ asset('images/logo.jpeg') }}" alt="Logo" class="logo">
+        <div class="certificate-header">Certificat de Réussite</div>
+        <div class="certificate-subtitle">Nous avons le plaisir de certifier</div>
+        
+        <div class="certificate-content">
+            Ce certificat est attribué à
+            <div class="user-name">{{ certification.user.firstName }} {{ certification.user.name }}</div>
+            pour sa réussite exceptionnelle dans le cursus :
+            <div class="course-name">{{ certification.course.title }}</div>
+        </div>
+        
+        <div class="date-issued">Délivré le : {{ certification.dateObtained|date("d F Y") }}</div>
+
+        <div class="footer">
+            <div class="signature">Signature de l'Administrateur</div>
+        </div>
+    </div>
+</body>
+</html>

@@ -85,6 +85,7 @@ class StripePaymentController extends AbstractController{
             return $this->json(['error' => 'Commande non trouvée ou accès non autorisé.'], 404);
         }
 
+    
         return $this->render('order/OrderSuccess.html.twig', ['order' => $order]);    }
 
     #[Route('/payment/cancel/{orderId}', name:'payment_cancel')]
@@ -98,6 +99,7 @@ class StripePaymentController extends AbstractController{
         }
 
         $order->setStatus(OrderStatus::CANCELED);
+        $em->persist($order);
         $em->flush();
 
         $this->addFlash('error', 'Le paiement a été annulé. Votre commande a été annulée.');

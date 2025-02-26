@@ -1,0 +1,42 @@
+{% extends 'profile_base.html.twig' %}
+
+{% block title %}Mes Cursus{% endblock %}
+
+{% block profile_content %}
+<div class="container py-5">
+    <h3 class="mb-4">Mes Cursus</h3>
+
+    <ul class="list-group">
+        {% for courseWithProgression in coursesWithProgression %}
+            <li class="list-group-item d-flex justify-content-between">
+                <div>
+                    <strong>
+                        <a href="{{ path('course_detail', { 'id': courseWithProgression.course.id }) }}">
+                            {{ courseWithProgression.course.title }}
+                        </a>
+                    </strong>
+                    <p>Catégorie : {{ courseWithProgression.course.category.name }}</p>
+                </div>
+                <div>
+                    <p>
+                        Progression : 
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar {% if courseWithProgression.progression == 100 %}bg-success{% else %}bg-primary{% endif %}" 
+                                 role="progressbar" 
+                                 style="width: {{ courseWithProgression.progression }}%;" 
+                                 aria-valuenow="{{ courseWithProgression.progression }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                                {{ courseWithProgression.progression }}%
+                            </div>
+                        </div>
+                    </p>
+                    {% if courseWithProgression.progression == 100 %}
+                        <p><strong>Certification obtenue</strong></p>
+                    {% endif %}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

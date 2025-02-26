@@ -1,0 +1,40 @@
+{% extends 'profile_base.html.twig' %}
+
+{% block title %}Détails du Cursus : {{ course.title }}{% endblock %}
+
+{% block profile_content %}
+<div class="container py-5">
+    <h3 class="mb-4">{{ course.title }}</h3>
+    <p><strong>Catégorie :</strong> {{ course.category.name }}</p>
+
+    <h4 class="mt-5">Leçons du Cursus</h4>
+    <ul class="list-group">
+        {% for lesson in course.lessons %}
+            <li class="list-group-item d-flex justify-content-between">
+                <span>{{ lesson.title }}</span>
+                <span>
+                    {% set lessonProgress = lessonProgressions[lesson.id] %}
+                    {% if lessonProgress %}
+                        {{ lessonProgress }}%
+                    {% else %}
+                        Non commencé
+                    {% endif %}
+                </span>
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% if certification is defined and certification is not null %}
+        <div class="alert alert-success mt-4">
+            🎉 Félicitations, vous avez obtenu votre certification pour ce cursus !
+        </div>
+
+        <div class="mt-3">
+            <a href="{{ path('certification_view', {id: course.id}) }}" target="_blank" class="btn btn-primary">
+                Voir la certification
+            </a>            
+            <a href="{{ path('certification_download', {id: course.id}) }}" class="btn btn-success">Télécharger la certification</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

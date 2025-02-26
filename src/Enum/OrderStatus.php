@@ -5,7 +5,7 @@ namespace App\Enum;
 enum OrderStatus: string
 {
     case PENDING = 'En attente';
-    case PAID = 'Payée'; // Correction du terme
+    case PAID = 'Payée';
     case CANCELED = 'Annulée';
 
     /**

@@ -92,7 +92,7 @@ class LessonControllerTest extends WebTestCase
 
 
         $this->assertResponseRedirects('/admin/lesson/');
-        dump($client->getResponse()->getContent());
+        //dump($client->getResponse()->getContent());
         $client->followRedirect();
 
         $crawler = $client->request('GET', 'admin/lesson/13');

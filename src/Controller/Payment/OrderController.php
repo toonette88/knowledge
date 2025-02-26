@@ -6,6 +6,7 @@ use App\Entity\Course;
 use App\Entity\Lesson;
 use App\Entity\Order;
 use App\Service\OrderService;
+use App\Entity\Billing;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -68,7 +69,7 @@ class OrderController extends AbstractController
     public function show(int $id)
     {
         $order = $this->entityManager->getRepository(Order::class)->find($id);
-    
+
         // Vérification que la commande appartient bien à l'utilisateur connecté
         if (!$order || $order->getUser() !== $this->getUser()) {
             throw $this->createNotFoundException('Commande introuvable ou accès refusé.');
@@ -84,10 +85,13 @@ class OrderController extends AbstractController
             ];
         }
     
+        $billing = $this->entityManager->getRepository(Billing::class)->findOneBy(['order' => $order]);
+
         // Rendu du template avec les données de la commande
         return $this->render('order/OrderSummary.html.twig', [
             'order' => $order,
             'orderDetails' => $orderDetails,
+            'billing' => $billing,
         ]);
     }
 
