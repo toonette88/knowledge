@@ -5,6 +5,11 @@ namespace App\Controller\Admin;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
+use App\Repository\CourseRepository;
+use App\Repository\OrderRepository;
+use App\Repository\OrderDetailRepository;
+use App\Repository\ProgressionRepository;
+use App\Repository\CertificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -66,12 +71,101 @@ class UserManagementController extends AbstractController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/users/{id}', name: 'admin_user_show')]
-    public function showUser(User $user): Response
-    {
+    public function showUser(
+        User $user,
+        OrderRepository $orderRepository,
+        ProgressionRepository $progressionRepository,
+        CertificationRepository $certificationRepository,
+        EntityManagerInterface $entityManager,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
+        // Récupère les commandes paginées
+        $query = $orderRepository->findByUser($user);
+        $orders = $paginator->paginate(
+            $query, // La requête Doctrine
+            $request->query->getInt('page', 1), // Le numéro de la page
+            10 // Nombre d'éléments par page
+        );
+
+         if (!$user) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour voir vos cursus.');
+        }
+
+        $courses = [];
+        $coursesWithProgression = [];
+        $lessonProgressions = [];
+
+    
+        foreach ($orders as $order) {
+            foreach ($order->getOrderDetails() as $orderDetail) {
+                $course = $orderDetail->getCourse() ?? $orderDetail->getLesson()->getCourse();
+    
+                // Vérifier si le cursus est déjà ajouté (éviter les doublons)
+                if ($course && !array_key_exists($course->getId(), $courses)) {
+                    $courses[$course->getId()] = $course;
+                }
+            }
+        }
+    
+        // Calculer la progression pour chaque cursus
+        foreach ($courses as $course) {
+            $totalLessons = count($course->getLessons());
+            $totalProgress = 0;
+    
+            foreach ($course->getLessons() as $lesson) {
+                $progress = $progressionRepository->findOneBy([
+                    'user' => $user,
+                    'lesson' => $lesson,
+                ]);
+               
+                $lessonProgressions[$lesson->getId()] = $progress ? $progress->getPercentage() : 0;
+
+                // Ajouter la progression réelle de la leçon (0% si aucune progression)
+                $totalProgress += $progress ? $progress->getPercentage() : 0;
+            }
+    
+            // Calcul de la moyenne de progression
+            $progression = ($totalLessons > 0) ? ($totalProgress / $totalLessons) : 0;
+    
+            // Vérifier si la progression atteint 100% et créer la certification si nécessaire
+            if ($progression > 99) {
+                $certification = $certificationRepository->findOneBy(['user' => $user, 'course' => $course]);
+    
+                if (!$certification) {
+                    $certification = new Certification();
+                    $certification->setUser($user);
+                    $certification->setCourse($course);
+                    $certification->setDateObtained(new \DateTime());
+    
+                    $entityManager->persist($certification);
+                    $entityManager->flush();
+                }
+            }
+    
+            $coursesWithProgression[] = [
+                'course' => $course,
+                'progression' => $progression,
+                'lessonProgressions' => $lessonProgressions,
+            ];
+        }
+
+        $coursesPagination = $paginator->paginate(
+            $coursesWithProgression,
+            $request->query->getInt('page', 1),
+            5 // Nombre de cursus par page
+        );
+
+
+    
         return $this->render('admin/user/user_show.html.twig', [
             'user' => $user,
+            'orders' => $orders,
+            'lessonProgressions' => $lessonProgressions,
+            'coursesWithProgression' => $coursesPagination,
         ]);
     }
+
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/users/{id}/delete', name: 'admin_user_delete', methods: ['POST'])]

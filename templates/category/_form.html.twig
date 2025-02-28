@@ -1,4 +1,25 @@
 {{ form_start(form) }}
     {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
+
+
+<style>
+    .btn-custom {
+        background-color: #0074c7;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-size: 16px;
+        transition: background-color 0.3s ease-in-out, transform 0.2s;
+    }
+
+    .btn-custom:hover {
+        background-color: #00497c;
+        transform: scale(1.05);
+    }
+
+    .btn-custom:active {
+        background-color: #00325a;
+        transform: scale(0.98);
+    }
+</style>

@@ -18,9 +18,6 @@ class Progression
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(inversedBy: 'progressions')]
-    private ?Course $course = null;
-
     #[ORM\ManyToOne(targetEntity: Lesson::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Lesson $lesson = null;
@@ -50,18 +47,6 @@ class Progression
     public function setUser(?User $user): static
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    public function getCourse(): ?Course
-    {
-        return $this->course;
-    }
-
-    public function setCourse(?Course $course): static
-    {
-        $this->course = $course;
 
         return $this;
     }

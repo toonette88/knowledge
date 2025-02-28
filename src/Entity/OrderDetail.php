@@ -18,9 +18,11 @@ class OrderDetail
     private ?Order $order = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderDetails')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Course $course = null;
 
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Lesson $lesson = null;
 
     #[ORM\Column]

@@ -58,7 +58,6 @@ class Course
     {
         $this->lessons = new ArrayCollection();
         $this->orderDetails = new ArrayCollection();
-        $this->progressions = new ArrayCollection();
         $this->certifications = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
@@ -170,6 +169,16 @@ class Course
         return $this->progressions;
     }
 
+    public function getUserProgression(User $user): ?int
+    {
+        foreach ($this->progressions as $progression) {
+            if ($progression->getUser() === $user) {
+                return $progression->getPercentage(); // Assumes "percentage" is the field storing the progress
+            }
+        }
+        return 0; // Retourne 0 si aucune progression trouvée
+    }
+    
     public function addProgression(Progression $progression): static
     {
         if (!$this->progressions->contains($progression)) {
