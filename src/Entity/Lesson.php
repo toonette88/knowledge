@@ -92,6 +92,12 @@ class Lesson
         return $this->contents;
     }
 
+    /**
+     * @return Collection<int, Progression>
+     */
+    #[ORM\OneToMany(mappedBy: 'lesson', targetEntity: Progression::class)]
+    private Collection $progressions;
+
     public function addContent(LessonContent $content): static
     {
         if (!$this->contents->contains($content)) {
@@ -112,6 +118,21 @@ class Lesson
         }
     
         return $this;
+    }
+
+    public function getProgressions(): Collection
+    {
+        return $this->progressions;
+    }
+
+    public function getUserProgression(User $user): ?float
+    {
+        foreach ($this->progressions as $progression) {
+            if ($progression->getUser() === $user) {
+                return $progression->getPercentage();
+            }
+        }
+        return 0.0; // Retourne 0 si aucune progression n'est trouvée
     }
 
 }
