@@ -30,17 +30,18 @@
             </ul>
         </nav>
 
-        <!-- Contenu principal -->
+        <!-- Main Content -->
         <div class="flex-grow-1 p-4">
             <header class="d-flex justify-content-between align-items-center mb-4 py-3 px-4" 
                     style="background-color: #0074c7; border-radius: 8px; color: white;">
                 <div class="d-flex align-items-center">
                     <i class="bi bi-shield-lock" style="font-size: 28px; margin-right: 10px;"></i> <!-- Admin icon -->
-                    <h1>{{ title|default('Dashboard') }}</h1>
+                    <h1>{{ title|default('Dashboard') }}</h1> <!-- Title of the page, default is 'Dashboard' -->
                 </div>
-                <span class="badge bg-light text-dark">Admin</span>
+                <span class="badge bg-light text-dark">Admin</span> <!-- Admin badge for identification -->
             </header>
 
+            <!-- Block for dynamic content -->
             <div class="container">
                 {% block admin_content %}{% endblock %}
             </div>
@@ -48,32 +49,38 @@
     </div>
 
     <style>
+        /* Styling for the sidebar */
         .nav {
-            margin-left: -5px; /* Ajustement pour coller à gauche */
+            margin-left: -5px; /* Adjustment to align sidebar to the left */
         }
 
+        /* Styling for the sidebar links */
         .nav-link {
-            color: #384050 !important; /* Gris foncé pour le texte */
+            color: #384050 !important; /* Dark grey text */
             font-size: 16px;
             font-weight: 500;
             border-radius: 5px;
         }
 
+        /* Hover effect for sidebar links */
         .nav-link:hover {
             background-color: #0074c7 !important;
             color: #f1f8fc !important;
         }
 
+        /* Active and focus state for sidebar links */
         .nav-link:active, .nav-link:focus {
             background-color: #00497c !important;
             color: white !important;
         }
 
+        /* Admin header icon size */
         header i {
             font-size: 28px;
             margin-right: 10px;
         }
 
+        /* Styling for the admin badge */
         header .badge {
             background-color: #82b864;
             color: white;
@@ -83,6 +90,7 @@
             font-size: 16px;
         }
 
+        /* Styling for the header title */
         header h1 {
             font-size: 30px;
             font-weight: bold;

@@ -3,9 +3,12 @@
 {% block title %}New Course{% endblock %}
 
 {% block admin_content %}
+    <!-- Page title for creating a new course -->
     <h3>Créer un nouveau Cursus</h3>
 
+    <!-- Include the form for creating a new course -->
     {{ include('course/_form.html.twig') }}
 
+    <!-- Link to navigate back to the courses list -->
     <a href="{{ path('app_course_index') }}">Retour à la liste</a>
 {% endblock %}

@@ -5,18 +5,21 @@
 {% block profile_content %}
     <div class="container mt-5">
         <div class="row">
+            <!-- Sidebar for lesson parts -->
             <div class="col-md-3">
                 <div class="card shadow-sm border-0">
                     <div class="card-header text-white" style="background-color: #0074c7;">
-                        <h5 class="mb-0">Parties de la Leçon</h5>
+                        <h5 class="mb-0">Parties de la Leçon</h5> <!-- Lesson parts section header -->
                     </div>
                     <div class="card-body p-2">
                         <ul class="list-group">
                             {% for content in contents %}
                                 <li class="list-group-item d-flex justify-content-between align-items-center {% if loop.index == currentPart %}active text-white{% endif %}">
+                                    <!-- Link to each part of the lesson -->
                                     <a href="{{ path('user_lesson_show', {'id': lesson.id, 'partId': loop.index}) }}" class="text-decoration-none {% if loop.index == currentPart %}text-white{% else %}text-dark{% endif %}">
                                         Partie {{ loop.index }}
                                     </a>
+                                    <!-- Checkmark icon for completed parts -->
                                     <i class="fas fa-check-circle {% if loop.index <= currentPart %}text-success{% else %}text-muted{% endif %}"></i>
                                 </li>
                             {% endfor %}
@@ -25,18 +28,21 @@
                 </div>
             </div>
 
+            <!-- Main content for the current lesson -->
             <div class="col-md-9">
                 <div class="card shadow-sm border-0">
                     <div class="card-body">
+                        <!-- Lesson title and price -->
                         <h3 class="text-primary">{{ lesson.title }}</h3>
                         <p class="text-muted">{{ lesson.price }} €</p>
 
+                        <!-- Display the content of the current part -->
                         <div id="part{{ currentPart }}" class="mt-3">
                             <h4 class="text-dark">Partie {{ currentPart }}</h4>
                             <p class="text-secondary">{{ contents[currentPart - 1].content }}</p>
                         </div>
 
-                        <!-- Progression -->
+                        <!-- Progress bar showing lesson progress -->
                         <div class="progress mt-4" style="height: 10px;">
                             <div class="progress-bar bg-success" role="progressbar" style="width: {{ progression.percentage }}%;" aria-valuenow="{{ progression.percentage }}" aria-valuemin="0" aria-valuemax="100">
                             </div>
@@ -44,24 +50,27 @@
                         <p class="mt-2 small text-muted">Progression : {{ progression.percentage }}%</p>
 
                         <div class="mt-4">
+                            <!-- Button to go to the previous part if not the first part -->
                             {% if currentPart > 1 %}
                                 <a href="{{ path('user_lesson_show', {'id': lesson.id, 'partId': currentPart - 1}) }}" class="btn btn-outline-secondary">
                                     <i class="fas fa-arrow-left"></i> Retour
                                 </a>
                             {% endif %}
 
+                            <!-- Button to go to the next part if not the last part -->
                             {% if currentPart < totalParts %}
                                 <a href="{{ path('user_lesson_next', {'id': lesson.id}) }}" class="btn btn-primary">
                                     Suivant <i class="fas fa-arrow-right"></i>
                                 </a>
                             {% else %}
-                                <!-- Afficher le bouton Terminer sur la dernière partie -->
+                                <!-- Display "Finish" button on the last part of the lesson -->
                                 <a href="{{ path('user_lesson_next', {'id': lesson.id}) }}" class="btn btn-success">
                                     Terminer la leçon 🎉
                                 </a>
                             {% endif %}
                         </div>
 
+                        <!-- Link to go back to the list of lessons -->
                         <a href="{{ path('user_lessons') }}" class="btn btn-dark mt-3">
                             <i class="fas fa-list"></i> Retour aux leçons
                         </a>

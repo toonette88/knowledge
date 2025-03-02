@@ -6,76 +6,76 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class CategoryControllerTest extends WebTestCase
 {
+    // Test for creating a category
     public function testCreateCategory()
-{
-    $client = static::createClient();
-    $crawler = $client->request('GET', '/login');
-    
-    $form = $crawler->selectButton('Se Connecter')->form([
-        'email' => 'admin@example.fr',
-        'password' => 'pass_1234',
-    ]);
-    $client->submit($form);
+    {
+        $client = static::createClient();
+        
+        // Log in as admin
+        $crawler = $client->request('GET', '/login');
+        $form = $crawler->selectButton('Se Connecter')->form([
+            'email' => 'admin@example.fr',
+            'password' => 'pass_1234',
+        ]);
+        $client->submit($form);
 
-    // Accède à la page de création de la catégorie
-    $crawler = $client->request('GET', 'admin/category/new');
+        // Access the category creation page
+        $crawler = $client->request('GET', 'admin/category/new');
 
-    // Vérifie que la page de création est bien chargée
-    $this->assertResponseIsSuccessful();
-    $this->assertSelectorTextContains('h3', 'Créer une nouvelle catégorie');
+        // Ensure the creation page loads successfully
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('h3', 'Créer une nouvelle catégorie');
 
-    // Soumet le formulaire de création
-    $form = $crawler->selectButton('Créer la catégorie')->form([
-        'category[name]' => 'Test Category',
-    ]);
-    $client->submit($form);
+        // Submit the category creation form
+        $form = $crawler->selectButton('Enregistrer')->form([
+            'category[name]' => 'Test Category',
+        ]);
+        $client->submit($form);
 
-    // Vérifie que la redirection a bien eu lieu vers '/admin/category'
-    $this->assertResponseRedirects('/admin/category');
+        // Check if redirection happens to the category list
+        $this->assertResponseRedirects('/admin/category');
 
-    // Simule la soumission de la page et vérifie que la catégorie a bien été ajoutée
-    $client->followRedirect();
+        // Follow the redirection and ensure the category appears in the list
+        $client->followRedirect();
+        $this->assertSelectorTextContains('table tbody', 'Test Category');
+    }
 
-    // Vérifie que la catégorie "Test Category" est bien présente dans la liste
-    $this->assertSelectorTextContains('table tbody', 'Test Category');
-}
-
-
+    // Test for editing a category
     public function testEditCategory()
     {
         $client = static::createClient();
         
+        // Log in as admin
         $crawler = $client->request('GET', '/login');
-        
         $form = $crawler->selectButton('Se Connecter')->form([
             'email' => 'admin@example.fr',
             'password' => 'pass_1234',
         ]);
         $client->submit($form);
         
-        // Accède à la page d'édition de la catégorie
-        $crawler = $client->request('GET', 'admin/category/5/edit');  // Assure-toi que l'ID est correct ici
+        // Access the category edit page (ensure the ID is correct)
+        $crawler = $client->request('GET', 'admin/category/5/edit');  
 
-        // Soumet les modifications du formulaire
-        $form = $crawler->selectButton('Mettre à jour')->form([
+        // Submit the category update form
+        $form = $crawler->selectButton('Enregistrer')->form([
             'category[name]' => 'Updated Category',
         ]);
         $client->submit($form);
 
-        // Vérifie la redirection
+        // Check for redirection after update
         $this->assertResponseRedirects('/admin/category');
         $client->followRedirect();
 
-        // Vérifie que la catégorie a bien été mise à jour
-        $this->assertSelectorTextContains('table tbody', 'Updated Category');
+        // Ensure the category was successfully updated
+        $this->assertSelectorTextContains('table tbody tr:nth-child(5) td', 'Updated Category');
     }
 
-
+    // Test for deleting a category
     public function testDeleteCategory()
     {
         $client = static::createClient();
         
-        // Connexion en tant qu'administrateur
+        // Log in as admin
         $crawler = $client->request('GET', '/login');
         $form = $crawler->selectButton('Se Connecter')->form([
             'email' => 'admin@example.fr',
@@ -83,32 +83,28 @@ class CategoryControllerTest extends WebTestCase
         ]);
         $client->submit($form);
         
-        // Accède à la page de la liste des catégories
+        // Access the category list page
         $crawler = $client->request('GET', '/admin/category');
         
-        // Vérifie que la catégorie "Updated Category" existe dans la table avant suppression
-        $this->assertSelectorTextContains('table tbody', 'Updated Category');
+        // Check that the category "Updated Category" exists in the table before deletion
+        $this->assertSelectorTextContains('table tbody tr:nth-child(5) td', 'Updated Category');
         
-        // Accède à la page de suppression de la catégorie avec l'ID 5
+        // Access the category edit page for deletion (ID 5)
         $crawler = $client->request('GET', '/admin/category/5/edit');
-
         $this->assertSelectorTextContains('h3', 'Modifier la Catégorie');
         
-        // Soumet le formulaire de suppression
+        // Submit the delete form
         $deleteForm = $crawler->selectButton('Supprimer')->form();
         $client->submit($deleteForm);
         
-        // Vérifie la redirection après suppression
+        // Check for redirection after deletion
         $this->assertResponseRedirects('/admin/category');
         $client->followRedirect();
         
-        // Essaye d'accéder à la page de la catégorie supprimée (ID 5)
+        // Attempt to access the deleted category's edit page (ID 5)
         $client->request('GET', '/admin/category/5/edit');
         
-        // Vérifie qu'un 404 est retourné car la catégorie n'existe plus
+        // Check that a 404 is returned because the category no longer exists
         $this->assertResponseStatusCodeSame(404);
     }
-
-    
-       
 }

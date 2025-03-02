@@ -8,18 +8,19 @@ class EmailTest extends WebTestCase
 {
     public function testEmailSentUponRequest(): void
     {
+        // Create a client instance to make requests
         $client = static::createClient();
 
-        // Effectuer une requête vers la route d'envoi d'email
+        // Make a GET request to the route responsible for sending the email
         $client->request('GET', '/test-email');
 
-        // Vérifier que la réponse a été envoyée avec succès
+        // Assert that the response was successful (status 200 OK)
         $this->assertResponseIsSuccessful();
 
-        // A ce stade, l'email devrait avoir été envoyé via Mailtrap.
-        // Vous pouvez vérifier manuellement dans votre boîte de réception Mailtrap.
+        // At this point, the email should have been sent via Mailtrap.
+        // You can manually check your Mailtrap inbox to confirm the email was sent.
 
-        // Optionnel : Ajouter une assertion si vous configurez un mock pour MailerInterface
-        $this->assertTrue(true, 'L\'email a bien été envoyé.');
+        // Optionally: Add an assertion if you have configured a mock for MailerInterface
+        $this->assertTrue(true, 'The email has been sent successfully.');
     }
 }

@@ -4,40 +4,48 @@
 
 {% block profile_content %}
 <div class="container mt-5 d-flex justify-content-center">
+    <!-- Profile edit card container with a shadow effect -->
     <div class="card p-4 shadow-sm" style="max-width: 600px; width: 100%; background-color: #f1f8fc; border: 1px solid #0074c7;">
-        <h2 class="text-center mb-4" style="color: #00497c;">Modifier mon profil</h2>
+        <h2 class="text-center mb-4" style="color: #00497c;">Modifier mon profil</h2> <!-- Title for profile editing -->
 
+        <!-- Start form rendering -->
         {{ form_start(form) }}
 
+        <!-- Name field -->
         <div class="mb-3">
-            {{ form_label(form.name, 'Nom', {'class': 'form-label', 'style': 'color: #384050;'}) }}
-            {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.name) }}
+            {{ form_label(form.name, 'Nom', {'class': 'form-label', 'style': 'color: #384050;'}) }} <!-- Label for name field -->
+            {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }} <!-- Input field for name -->
+            {{ form_errors(form.name) }} <!-- Display form errors for the name field -->
         </div>
 
+        <!-- First name field -->
         <div class="mb-3">
-            {{ form_label(form.firstName, 'Prénom', {'class': 'form-label', 'style': 'color: #384050;'}) }}
-            {{ form_widget(form.firstName, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.firstName) }}
+            {{ form_label(form.firstName, 'Prénom', {'class': 'form-label', 'style': 'color: #384050;'}) }} <!-- Label for first name field -->
+            {{ form_widget(form.firstName, {'attr': {'class': 'form-control'}}) }} <!-- Input field for first name -->
+            {{ form_errors(form.firstName) }} <!-- Display form errors for the first name field -->
         </div>
 
+        <!-- Email field -->
         <div class="mb-3">
-            {{ form_label(form.email, 'Email', {'class': 'form-label', 'style': 'color: #384050;'}) }}
-            {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.email) }}
+            {{ form_label(form.email, 'Email', {'class': 'form-label', 'style': 'color: #384050;'}) }} <!-- Label for email field -->
+            {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }} <!-- Input field for email -->
+            {{ form_errors(form.email) }} <!-- Display form errors for the email field -->
         </div>
 
+        <!-- Password field (for updating password) -->
         <div class="mb-3">
-            {{ form_label(form.plainPassword, 'Nouveau mot de passe', {'class': 'form-label', 'style': 'color: #384050;'}) }}
-            {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control'}}) }}
-            {{ form_errors(form.plainPassword) }}
+            {{ form_label(form.plainPassword, 'Nouveau mot de passe', {'class': 'form-label', 'style': 'color: #384050;'}) }} <!-- Label for password field -->
+            {{ form_widget(form.plainPassword, {'attr': {'class': 'form-control'}}) }} <!-- Input field for password -->
+            {{ form_errors(form.plainPassword) }} <!-- Display form errors for the password field -->
         </div>
 
+        <!-- Submit and Cancel buttons -->
         <div class="d-flex justify-content-between mt-4">
-            <button type="submit" class="btn btn-primary">Mettre à jour</button>
-            <a href="{{ path('user_profile') }}" class="btn btn-secondary">Retour</a>
+            <button type="submit" class="btn btn-primary">Mettre à jour</button> <!-- Update button -->
+            <a href="{{ path('user_profile') }}" class="btn btn-secondary">Retour</a> <!-- Back button to profile page -->
         </div>
 
+        <!-- End form rendering -->
         {{ form_end(form) }}
     </div>
 </div>

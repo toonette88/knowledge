@@ -1,30 +1,42 @@
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #0074c7;">
     <div class="container-fluid">
+        <!-- Brand link (Home page) -->
         <a class="navbar-brand" href="{{ path('app_home') }}" style="color: #f1f8fc;">
+            <!-- Logo image with a width of 100px -->
             <img src="{{ asset('images/logo.jpeg') }}" alt="Logo" width="100" height="auto">
             E-learning Knowledge
         </a>
+        
+        <!-- Button to toggle navigation in mobile view -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+        
+        <!-- Navigation items (links) -->
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
+                <!-- Link to the Catalog page -->
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('catalog') }}" style="color: #f1f8fc;">Catalogue</a>
                 </li>
             </ul>
             <ul class="navbar-nav">
+                <!-- Check if the user is logged in (app.user) -->
                 {% if app.user %}
-                     <li class="nav-item">
+                    <!-- Link to user profile page -->
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ path('user_index') }}" style="color: #f1f8fc;">Mon Profil</a>
                     </li>
+                    <!-- Link to logout -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_logout') }}" style="color: #f1f8fc;">Déconnexion</a>
                     </li>
                 {% else %}
+                    <!-- Link to login page if user is not logged in -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_login') }}" style="color: #f1f8fc;">Connexion</a>
                     </li>
+                    <!-- Link to registration page if user is not logged in -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('app_register') }}" style="color: #f1f8fc;">S'inscrire</a>
                     </li>

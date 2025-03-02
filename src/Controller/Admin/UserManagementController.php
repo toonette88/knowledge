@@ -23,52 +23,45 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-
 class UserManagementController extends AbstractController
 {
-
     private UserRepository $userRepository;
     private PaginatorInterface $paginator;
 
-    // Injection des dépendances via le constructeur
+    // Constructor dependency injection for user repository and paginator
     public function __construct(UserRepository $userRepository, PaginatorInterface $paginator)
     {
         $this->userRepository = $userRepository;
         $this->paginator = $paginator;
     }
 
+    // List all users with pagination and search functionality
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/users', name: 'admin_users_list')]
-    
     public function listUsers(Request $request): Response
     {
-        // Récupérer le terme de recherche
-        $searchTerm = $request->query->get('search', '');
-        
-        // Nombre d'éléments par page
-        $page = $request->query->getInt('page', 1);
-        $limit = 10;
+        $searchTerm = $request->query->get('search', ''); // Get the search term from the query string
+        $page = $request->query->getInt('page', 1); // Current page number
+        $limit = 10; // Number of items per page
 
-        // Construire la requête pour récupérer les utilisateurs filtrés par nom
+        // Create query to retrieve users filtered by search term
         $query = $this->userRepository->createQueryBuilder('u')
             ->where('u.name LIKE :search')
             ->setParameter('search', '%' . $searchTerm . '%')
             ->orderBy('u.name', 'ASC')
             ->getQuery();
 
-        // Paginer les résultats
-        $pagination = $this->paginator->paginate(
-            $query,  // La requête
-            $page,   // La page actuelle
-            $limit   // Limite par page
-        );
+        // Paginate the result
+        $pagination = $this->paginator->paginate($query, $page, $limit);
 
+        // Render the user list view
         return $this->render('admin/user/user_list.html.twig', [
             'pagination' => $pagination,
             'search' => $searchTerm
         ]);
     }
 
+    // Show user details, including orders, progressions, and certifications
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/users/{id}', name: 'admin_user_show')]
     public function showUser(
@@ -80,69 +73,53 @@ class UserManagementController extends AbstractController
         PaginatorInterface $paginator,
         Request $request
     ): Response {
-        // Récupère les commandes paginées
-        $query = $orderRepository->findByUser($user);
-        $orders = $paginator->paginate(
-            $query, // La requête Doctrine
-            $request->query->getInt('page', 1), // Le numéro de la page
-            10 // Nombre d'éléments par page
-        );
+        $query = $orderRepository->findByUser($user); // Get user orders
+        $orders = $paginator->paginate($query, $request->query->getInt('page', 1), 10); // Paginate orders
 
-         if (!$user) {
-            throw $this->createAccessDeniedException('Vous devez être connecté pour voir vos cursus.');
-        }
-
+        // Handle user courses and progression
         $courses = [];
         $coursesWithProgression = [];
         $lessonProgressions = [];
 
-    
         foreach ($orders as $order) {
             foreach ($order->getOrderDetails() as $orderDetail) {
                 $course = $orderDetail->getCourse() ?? $orderDetail->getLesson()->getCourse();
-    
-                // Vérifier si le cursus est déjà ajouté (éviter les doublons)
                 if ($course && !array_key_exists($course->getId(), $courses)) {
                     $courses[$course->getId()] = $course;
                 }
             }
         }
-    
-        // Calculer la progression pour chaque cursus
+
+        // Calculate the progression for each course
         foreach ($courses as $course) {
             $totalLessons = count($course->getLessons());
             $totalProgress = 0;
-    
+
             foreach ($course->getLessons() as $lesson) {
                 $progress = $progressionRepository->findOneBy([
                     'user' => $user,
                     'lesson' => $lesson,
                 ]);
-               
                 $lessonProgressions[$lesson->getId()] = $progress ? $progress->getPercentage() : 0;
-
-                // Ajouter la progression réelle de la leçon (0% si aucune progression)
                 $totalProgress += $progress ? $progress->getPercentage() : 0;
             }
-    
-            // Calcul de la moyenne de progression
+
             $progression = ($totalLessons > 0) ? ($totalProgress / $totalLessons) : 0;
-    
-            // Vérifier si la progression atteint 100% et créer la certification si nécessaire
+
+            // If the progression reaches 100%, create a certification
             if ($progression > 99) {
                 $certification = $certificationRepository->findOneBy(['user' => $user, 'course' => $course]);
-    
                 if (!$certification) {
                     $certification = new Certification();
                     $certification->setUser($user);
                     $certification->setCourse($course);
                     $certification->setDateObtained(new \DateTime());
-    
+
                     $entityManager->persist($certification);
                     $entityManager->flush();
                 }
             }
-    
+
             $coursesWithProgression[] = [
                 'course' => $course,
                 'progression' => $progression,
@@ -150,14 +127,9 @@ class UserManagementController extends AbstractController
             ];
         }
 
-        $coursesPagination = $paginator->paginate(
-            $coursesWithProgression,
-            $request->query->getInt('page', 1),
-            5 // Nombre de cursus par page
-        );
+        // Paginate the courses with progression
+        $coursesPagination = $paginator->paginate($coursesWithProgression, $request->query->getInt('page', 1), 5);
 
-
-    
         return $this->render('admin/user/user_show.html.twig', [
             'user' => $user,
             'orders' => $orders,
@@ -166,18 +138,18 @@ class UserManagementController extends AbstractController
         ]);
     }
 
-
+    // Delete a user
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/admin/users/{id}/delete', name: 'admin_user_delete', methods: ['POST'])]
     public function deleteUser(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
 
             $this->addFlash('success', 'Utilisateur supprimé avec succès.');
 
-            // Déterminer la redirection en fonction de la page d'origine
+            // Redirect to user list if the user was on the show page
             $referer = $request->headers->get('referer');
             if (str_contains($referer, '/admin/users/' . $user->getId() . '/show')) {
                 return $this->redirectToRoute('admin_users_list');
@@ -187,42 +159,41 @@ class UserManagementController extends AbstractController
         return $this->redirectToRoute('admin_users_list');
     }
 
-
+    // Display the logged-in user's profile
     #[IsGranted('ROLE_USER')]
     #[Route('/user/profile', name: 'user_profile')]
     public function profile(): Response
     {
-        $user = $this->getUser(); // L'utilisateur connecté
+        $user = $this->getUser(); // Get the logged-in user
 
         return $this->render('user/user_profile.html.twig', [
             'user' => $user,
         ]);
     }
 
+    // Edit the logged-in user's profile
     #[IsGranted('ROLE_USER')]
     #[Route('/user/profile/edit', name: 'user_profile_edit')]
     public function editProfile(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $user = $this->getUser(); // Récupère l'utilisateur connecté
+        $user = $this->getUser(); // Get the logged-in user
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Si un nouveau mot de passe a été saisi, on le hache et on met à jour l'utilisateur
+            // If a new password is provided, hash it and update the user
             if ($form->get('plainPassword')->getData()) {
                 $newPassword = $form->get('plainPassword')->getData();
                 $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
                 $user->setPassword($hashedPassword);
             }
 
-            // Sauvegarder l'utilisateur avec le mot de passe mis à jour
             $entityManager->flush();
 
-            // Ajouter un message flash de succès
-            $this->addFlash('success', 'Votre profil a été mis à jour.');
+            $this->addFlash('success', 'Your profile has been updated.');
 
-            return $this->redirectToRoute('user_profile'); // Rediriger vers le profil
+            return $this->redirectToRoute('user_profile');
         }
 
         return $this->render('/user/user_edit.html.twig', [
@@ -230,34 +201,30 @@ class UserManagementController extends AbstractController
         ]);
     }
 
+    // Delete the logged-in user's profile
     #[IsGranted('ROLE_USER')]
     #[Route('/user/profile/delete', name: 'user_profile_delete', methods: ['POST'])]
     public function deleteProfile(Request $request, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage, SessionInterface $session): Response
     {
-        $user = $this->getUser();
+        $user = $this->getUser(); // Get the logged-in user
     
-        // Vérification du CSRF Token
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
-            // Suppression de l'utilisateur
+        // Verify CSRF token
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
+            // Delete the user
             $entityManager->remove($user);
             $entityManager->flush();
     
-            // Déconnexion de l'utilisateur
-            $tokenStorage->setToken(null);  // Retirer le token de sécurité
-            $session->invalidate();          // Invalider la session
+            // Log the user out
+            $tokenStorage->setToken(null);
+            $session->invalidate();
     
-            $this->addFlash('success', 'Votre compte a été supprimé.');
+            $this->addFlash('success', 'Your account has been deleted.');
     
-            // Redirection vers la page d'accueil
+            // Redirect to the home page
             return $this->redirectToRoute('app_home');
         }
     
-        // En cas d'échec de la suppression, redirige vers la page de profil
+        // In case of failure, redirect to the profile page
         return $this->redirectToRoute('user_profile');
     }
-    
-
-
-
-
 }

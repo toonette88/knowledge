@@ -20,6 +20,7 @@ class AppFixtures extends Fixture
 {
     private UserPasswordHasherInterface $hasher;
 
+    // Constructor for injecting the password hasher service
     public function __construct(UserPasswordHasherInterface $hasher)
     {
         $this->hasher = $hasher;
@@ -27,9 +28,10 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        // Faker is used to generate fake data
         $faker = Factory::create('fr_FR');
 
-        // Création des catégories
+        // Define categories with courses and lessons data
         $categoriesData = [
             'Musique' => [
                 [
@@ -89,7 +91,7 @@ class AppFixtures extends Fixture
             ],
         ];
 
-
+        // Iterate through categories and create related entities
         foreach ($categoriesData as $categoryName => $courseList) {
             $category = new Category();
             $category->setName($categoryName);
@@ -97,6 +99,7 @@ class AppFixtures extends Fixture
             //echo "Catégorie créée : " . $category->getName() . "\n";
 
             foreach ($courseList as $courseData) {
+                // Create Course entity
                 $course = new Course();
                 $course->setTitle($courseData['title']);
                 $course->setPrice($courseData['price']);
@@ -108,6 +111,7 @@ class AppFixtures extends Fixture
 
 
                 foreach ($courseData['lessons'] as $lessonData) {
+                    // Create Lesson entity
                     $lesson = new Lesson();
                     $lesson->setTitle($lessonData['title']);
                     $lesson->setPrice($lessonData['price']);
@@ -115,12 +119,12 @@ class AppFixtures extends Fixture
                     $manager->persist($lesson);
                     //echo "Leçon créée : " . $lesson->getTitle() . "\n";
                 
-                    // Ajouter plusieurs parties de contenu à chaque leçon
-                    for ($i = 1; $i <= 3; $i++) { 
+                    // Add multiple content parts to each lesson
+                        for ($i = 1; $i <= 3; $i++) { 
                         $lessonContent = new LessonContent();
                         $lessonContent->setLesson($lesson);
-                        $lessonContent->setContent($faker->paragraphs(5, true)); // Génère 3 paragraphes
-                        $lessonContent->setPart($i); // Si tu as un champ "part" pour numéroter les contenus
+                        $lessonContent->setContent($faker->paragraphs(5, true)); // Generate 5 paragraphs
+                        $lessonContent->setPart($i); // Assign part number (if applicable)
                         $manager->persist($lessonContent);
                         //echo "Contenu créé" . "\n";                
                     }
@@ -129,7 +133,7 @@ class AppFixtures extends Fixture
         }   
         $manager->flush();
 
-         // --- Création des utilisateurs ---
+        // --- Create Users ---
          $users = [];
          for ($i = 0; $i < 10; $i++) {
              $user = new User();
@@ -138,6 +142,7 @@ class AppFixtures extends Fixture
                  ->setEmail('user' . $i . '@example.fr')
                  ->setRoles(['ROLE_USER']);
  
+            // Hash and set the password
              $password = $this->hasher->hashPassword($user, 'pass_1234');
              $user->setPassword($password);
              $manager->persist($user);
@@ -146,15 +151,15 @@ class AppFixtures extends Fixture
              //echo "Utilisateur créé : " . $user->getEmail() . "\n";
          }
  
-         // --- Création des commandes et des détails de commande ---
-         $courses = $manager->getRepository(Course::class)->findAll();
+        // --- Create Orders and Order Details ---
+        $courses = $manager->getRepository(Course::class)->findAll();
  
          if (empty($users)) {
-            // echo "Aucun utilisateur n'a été créé.\n";
+            echo "Aucun utilisateur n'a été créé.\n";
          }
  
          if (empty($courses)) {
-             //echo "Aucun cours n'a été créé.\n";
+            echo "Aucun cours n'a été créé.\n";
          }
  
          foreach ($users as $user) {
@@ -166,6 +171,7 @@ class AppFixtures extends Fixture
  
              $total = 0;
  
+            // Add details to the order (currently commented out)
              /*for ($i = 0; $i < 2; $i++) {
                  $detail = new OrderDetail();
                  $randomCourse = $faker->randomElement($courses);
@@ -179,27 +185,27 @@ class AppFixtures extends Fixture
  
                 // echo "Ajout du cours : " . $randomCourse->getTitle() . " à la commande de l'utilisateur " . $user->getEmail() . "\n";
              }
- 
+            // Update the total order price and persist the order
              $order->setTotal($total);
              $manager->persist($order);*/
              //echo "Commande créée pour l'utilisateur : " . $user->getEmail() . "\n";
          }
  
-         // --- Création d'un utilisateur admin ---
-         $admin = new User();
-         $admin->setName('admin')
-             ->setFirstname('admin')
-             ->setEmail('admin@example.fr')
-             ->setRoles(['ROLE_ADMIN']);
- 
-         $password = $this->hasher->hashPassword($admin, 'pass_1234');
-         $admin->setPassword($password);
-         $manager->persist($admin);
+        // --- Create Admin User ---
+        $admin = new User();
+        $admin->setName('admin')
+            ->setFirstname('admin')
+            ->setEmail('admin@example.fr')
+            ->setRoles(['ROLE_ADMIN']);
+
+        $password = $this->hasher->hashPassword($admin, 'pass_1234');
+        $admin->setPassword($password);
+        $manager->persist($admin);
         // echo "Utilisateur admin créé : " . $admin->getEmail() . "\n";
  
          $manager->flush();
 
-        // --- Création des progressions ---
+        // --- Create Progressions ---
         $users = $manager->getRepository(User::class)->findAll();
         $lessons = $manager->getRepository(Lesson::class)->findAll();
         $courses = $manager->getRepository(Course::class)->findAll();
@@ -211,9 +217,9 @@ class AppFixtures extends Fixture
                 $lesson = $faker->randomElement($lessons);
                 $course = $lesson->getCourse(); // Récupération du cursus lié à la leçon
 
+                // Set the progression details
                 $progression->setUser($user)
                     ->setLesson($lesson)
-                    ->setCourse($course)
                     ->setChapter(rand(1, 5))
                     ->setPercentage(rand(0, 100));
 
@@ -223,13 +229,15 @@ class AppFixtures extends Fixture
 
         $manager->flush();
 
+
+        // --- Set Specific Progression Data ---
         $user = $manager->getRepository(User::class)->findOneBy(['name' => 'user3']);
 
         $lesson1 = $manager->getRepository(Lesson::class)->find(9);
         $lesson2 = $manager->getRepository(Lesson::class)->find(10);
         
         if ($user && $lesson1 && $lesson2) {
-            // Vérifier si les progressions existent déjà
+            // Check if progressions already exist
             $progression1 = $manager->getRepository(Progression::class)->findOneBy([
                 'user' => $user,
                 'lesson' => $lesson1
@@ -240,14 +248,13 @@ class AppFixtures extends Fixture
                 'lesson' => $lesson2
             ]);
         
-            // Si elles existent, mettre à jour le pourcentage
+            // If progressions exist, update the percentage
             if ($progression1) {
                 $progression1->setPercentage(0);
             } else {
                 $progression1 = new Progression();
                 $progression1->setUser($user)
                     ->setLesson($lesson1)
-                    ->setCourse($lesson1->getCourse())
                     ->setChapter(1)
                     ->setPercentage(0);
                 $manager->persist($progression1);
@@ -259,7 +266,6 @@ class AppFixtures extends Fixture
                 $progression2 = new Progression();
                 $progression2->setUser($user)
                     ->setLesson($lesson2)
-                    ->setCourse($lesson2->getCourse())
                     ->setChapter(3)
                     ->setPercentage(100);
                 $manager->persist($progression2);

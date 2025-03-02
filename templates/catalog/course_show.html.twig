@@ -6,56 +6,69 @@
 
 {% block body %}
 <div class="container mt-5">
+    {# Course Title #}
     <h1 class="text-primary mb-4">{{ course.title }}</h1>
 
+    {# Course Information Card #}
     <div class="card mb-4">
         <div class="card-body">
+            {# Course Description #}
             <h5 class="card-title text-secondary">Description</h5>
             <p class="card-text">{{ course.description }}</p>
 
+            {# Course Category #}
             <h5 class="card-title text-secondary">Catégorie</h5>
             <p class="card-text">{{ course.category.name }}</p>
 
+            {# Course Price #}
             <h5 class="card-title text-secondary">Prix</h5>
             <p class="card-text">{{ course.price }} €</p>
 
+            {# Link to return to the catalog #}
             <a href="{{ path('catalog') }}" class="btn btn-secondary mt-3">Retour au catalogue</a>
 
-            <!-- Bouton pour acheter tout le cursus -->
+            {# Button to buy the entire course #}
             {% if not hasPurchasedCourse %}
                 <form method="post" action="{{ path('order_create') }}" enctype="application/x-www-form-urlencoded">
                     <input type="hidden" name="courseId" value="{{ course.id }}">
                     <button type="submit" class="btn btn-success mt-3">Acheter le cursus complet</button>
                 </form>
             {% else %}
+                {# Button disabled if the course has been purchased #}
                 <button class="btn btn-success mt-3" disabled>Acheter le cursus complet (déjà acheté)</button>
             {% endif %}
         </div>
     </div>
 
+    {# Lessons Section #}
     <h2 class="text-primary">Leçons</h2>
 
+    {# If there are lessons, display them #}
     {% if course.lessons|length > 0 %}
         <div class="list-group">
            {% for lesson in course.lessons %}
                 <div class="d-flex justify-content-between align-items-center list-group-item">
                     <div>
+                        {# Lesson Title #}
                         <h5 class="mb-1">{{ lesson.title }}</h5>
                         <small class="text-muted">{{ lesson.price }} €</small>
                     </div>
-                    
+
+                    {# If course has not been purchased, offer option to buy lessons #}
                     {% if not hasPurchasedCourse %}
                         <form method="post" action="{{ path('order_create') }}" enctype="application/x-www-form-urlencoded">
                             <input type="hidden" name="lessonId" value="{{ lesson.id }}">
                             <button type="submit" class="btn btn-outline-primary btn-sm">Acheter cette leçon</button>
                         </form>
                     {% else %}
+                    {# Button disabled if the lesson has been purchased #}
                         <button class="btn btn-outline-primary btn-sm" disabled>Acheter cette leçon (déjà acheté)</button>
                     {% endif %}
                 </div>
             {% endfor %}
         </div>
     {% else %}
+        {# Message if no lessons are available for the course #}
         <p>Aucune leçon n'est disponible pour ce cours.</p>
     {% endif %}
 </div>

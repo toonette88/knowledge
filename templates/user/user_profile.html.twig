@@ -4,31 +4,38 @@
 
 {% block profile_content %}
 <div class="container mt-5 d-flex justify-content-center">
+    <!-- Profile card container with shadow effect and custom background color -->
     <div class="card p-4 shadow-sm" style="max-width: 600px; width: 100%; background-color: #f1f8fc; border: 1px solid #0074c7;">
-        <h2 class="text-center mb-4" style="color: #00497c;">Mon Profil</h2>
+        <h2 class="text-center mb-4" style="color: #00497c;">Mon Profil</h2> <!-- Profile page title -->
 
+        <!-- Display success flash messages, if any -->
         {% for message in app.flashes('success') %}
-            <div class="alert alert-success text-center">{{ message }}</div>
+            <div class="alert alert-success text-center">{{ message }}</div> <!-- Success message container -->
         {% endfor %}
 
+        <!-- Display the user's name -->
         <div class="mb-3">
-            <strong>Nom :</strong> {{ app.user.name }}
+            <strong>Nom :</strong> {{ app.user.name }} <!-- User's last name -->
         </div>
 
+        <!-- Display the user's first name -->
         <div class="mb-3">
-            <strong>Prénom :</strong> {{ app.user.firstName }}
+            <strong>Prénom :</strong> {{ app.user.firstName }} <!-- User's first name -->
         </div>
 
+        <!-- Display the user's email -->
         <div class="mb-3">
-            <strong>Email :</strong> {{ app.user.email }}
+            <strong>Email :</strong> {{ app.user.email }} <!-- User's email -->
         </div>
 
+        <!-- Buttons for editing and deleting the profile -->
         <div class="d-flex justify-content-between mt-4">
-            <a href="{{ path('user_profile_edit') }}" class="btn btn-warning">Modifier mon profil</a>
-            
+            <a href="{{ path('user_profile_edit') }}" class="btn btn-warning">Modifier mon profil</a> <!-- Edit profile button -->
+
+            <!-- Form to delete the user's account with CSRF protection -->
             <form method="post" action="{{ path('user_profile_delete') }}">
-                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ app.user.id) }}">
-                <button type="submit" class="btn btn-danger">Supprimer mon compte</button>
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ app.user.id) }}"> <!-- CSRF token for security -->
+                <button type="submit" class="btn btn-danger">Supprimer mon compte</button> <!-- Delete account button -->
             </form>
         </div>
     </div>

@@ -5,7 +5,10 @@
 {% block body %}
 <div class="container py-5">
     <div class="card p-4 shadow-lg rounded-3">
+        <!-- Page Header -->
         <h2 class="text-center text-primary">Récapitulatif de votre commande</h2>
+
+        <!-- Order Details Table -->
         <table class="table mt-3">
             <thead class="bg-light">
                 <tr>
@@ -15,20 +18,26 @@
             </thead>
             <tbody>
                 {% for detail in orderDetails %}
-                <tr>
-                    <td>
-                        {% if detail.course %}
-                            {{ detail.course.title }}
-                        {% elseif detail.lesson %}
-                            {{ detail.lesson.title }}
-                        {% endif %}
-                    </td>
-                    <td class="text-end">{{ detail.unitPrice }} €</td>
-                </tr>
+                    <tr>
+                        <!-- Display product (course or lesson) title -->
+                        <td>
+                            {% if detail.course %}
+                                {{ detail.course.title }}
+                            {% elseif detail.lesson %}
+                                {{ detail.lesson.title }}
+                            {% endif %}
+                        </td>
+                        <!-- Display unit price for each product -->
+                        <td class="text-end">{{ detail.unitPrice }} €</td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
+
+        <!-- Total Price -->
         <h4 class="text-end text-dark">Total : <span class="fw-bold">{{ order.total }} €</span></h4>
+
+        <!-- Payment Button -->
         <div class="text-center mt-4">
             <form method="post" action="{{ path('payment_create_session', {'orderId': order.id }) }}">
                 <button type="submit" class="btn btn-primary px-4 py-2 rounded-pill shadow">Payer avec Stripe</button>

@@ -15,63 +15,67 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_USER')]
-#[Route('/user')]
+#[IsGranted('ROLE_USER')] // Only allow access to users with 'ROLE_USER'
+#[Route('/user')] // All routes in this controller will start with '/user'
 class ProfileController extends AbstractController
 {
+    // Displays the user's profile dashboard
     #[Route('/', name: 'user_index')]
     public function index(): Response
     {
         return $this->render('user/index.html.twig');
     }
 
+    // Displays the user's profile information
     #[Route('/informations', name: 'user_informations')]
     public function informations(): Response
     {
         return $this->render('user/user_profile.html.twig');
     }
+
+    // Displays the user's lessons based on their orders
     #[Route('/lessons', name: 'user_lessons')]
     public function userLessons(OrderRepository $orderRepository, ProgressionRepository $progressionRepository): Response
     {
         $user = $this->getUser();
     
         if (!$user) {
-            throw $this->createAccessDeniedException('Vous devez être connecté.');
+            throw $this->createAccessDeniedException('You must be logged in.');
         }
     
-        // On récupère toutes les commandes payées de l'utilisateur
-        $orders = $orderRepository->findBy(['user' => $user, 'status' => 'Payée']);
+        // Get all paid orders for the user
+        $orders = $orderRepository->findBy(['user' => $user, 'status' => 'Paid']);
     
         $lessons = [];
         $lessonProgressions = [];
     
-        // Récupérer les leçons associées aux commandes
+        // Retrieve the lessons associated with the orders
         foreach ($orders as $order) {
             foreach ($order->getOrderDetails() as $orderDetail) {
                 $lesson = $orderDetail->getLesson();
                 $course = $orderDetail->getCourse();
     
-                // Ajouter les leçons de cursus complets
+                // Add lessons from complete courses
                 if ($course) {
                     foreach ($course->getLessons() as $courseLesson) {
-                        $lessons[$courseLesson->getId()] = $courseLesson; // Utilisation d'un tableau associatif pour éviter les doublons
+                        $lessons[$courseLesson->getId()] = $courseLesson; // Use associative array to avoid duplicates
                     }
                 }
     
-                // Ajouter la leçon individuelle
+                // Add individual lessons
                 if ($lesson) {
-                    $lessons[$lesson->getId()] = $lesson; // Utilisation d'un tableau associatif pour éviter les doublons
+                    $lessons[$lesson->getId()] = $lesson; // Use associative array to avoid duplicates
                 }
             }
         }
     
-        // Récupérer la progression pour chaque leçon
+        // Retrieve the progress for each lesson
         $lessonProgressions = $progressionRepository->findBy([
             'user' => $user,
-            'lesson' => array_values($lessons), // Récupérer les progressions de toutes les leçons en une seule requête
+            'lesson' => array_values($lessons), // Get progress for all lessons in one query
         ]);
     
-        // Organiser les progressions par ID de leçon
+        // Organize the progress by lesson ID
         $progressions = [];
         foreach ($lessonProgressions as $progress) {
             $progressions[$progress->getLesson()->getId()] = $progress->getPercentage();
@@ -79,12 +83,11 @@ class ProfileController extends AbstractController
     
         return $this->render('user/lessons.html.twig', [
             'lessons' => $lessons,
-            'lessonProgressions' => $progressions, // Utilisation d'un tableau associatif pour les progressions
+            'lessonProgressions' => $progressions, // Use an associative array for progress
         ]);
     }
-    
-    
-    // Route pour marquer la progression
+
+    // Route to mark progress on a lesson
     #[Route('/lesson/{id}/next', name: 'user_lesson_next')]
     public function nextPart(Lesson $lesson, EntityManagerInterface $em): Response
     {
@@ -94,20 +97,20 @@ class ProfileController extends AbstractController
             'lesson' => $lesson,
         ]);
 
-        // Si la progression n'existe pas encore, on la crée
+        // If the progression doesn't exist, create it
         if (!$progression) {
             $progression = new Progression();
             $progression->setUser($user)
                 ->setLesson($lesson)
-                ->setChapter(1)  // Commencer avec la première partie
+                ->setChapter(1)  // Start with the first part
                 ->setPercentage(0);
             $em->persist($progression);
         }
 
-        // Récupérer le total des parties
+        // Get the total number of parts
         $totalParts = count($lesson->getContents());
 
-        // Si on est sur la dernière partie, terminer directement
+        // If it's the last part, finish directly
         if ($progression->getChapter() == $totalParts) {
             $progression->setPercentage(100);
             $em->flush();
@@ -117,53 +120,51 @@ class ProfileController extends AbstractController
             ]);
         }
 
-        // Vérifier si on est sur une nouvelle partie et pas sur une partie déjà validée
+        // Check if we are on a new part and not a previously completed one
         if ($progression->getChapter() < $totalParts) {
-            // Passer à la partie suivante
+            // Move to the next part
             $nextChapter = $progression->getChapter() + 1;
 
-            // Calculer l'incrément de progression : 1 / nombre total de parties
+            // Calculate the progress increment: 1 / total number of parts
             $increment = 100 / $totalParts;
 
-            // Incrémenter la progression uniquement si la partie suivante n'est pas déjà validée
+            // Increment the progress only if the next part has not already been validated
             if ($nextChapter > $progression->getChapter()) {
                 $newPercentage = $progression->getPercentage() + $increment;
                 $progression->setChapter($nextChapter);
-                $progression->setPercentage(min($newPercentage, 100)); // S'assurer que la progression ne dépasse pas 100%
+                $progression->setPercentage(min($newPercentage, 100)); // Ensure the progress doesn't exceed 100%
             }
         }
 
         $em->flush();
 
-        // Rediriger vers la page de la partie suivante ou terminer la leçon
+        // Redirect to the next part or finish the lesson
         return $this->redirectToRoute('user_lesson_show', [
             'id' => $lesson->getId(),
             'partId' => $progression->getChapter(),
         ]);
     }
 
-
-
-
+    // Displays a specific part of a lesson
     #[Route('/lesson/{id}/{partId<\d+>}', name: 'user_lesson_show', defaults: ['partId' => 1])]
     public function showLesson(Lesson $lesson, EntityManagerInterface $em, int $partId = 1): Response
     {
         $user = $this->getUser();
 
         if (!$user) {
-            throw $this->createAccessDeniedException('Vous devez être connecté.');
+            throw $this->createAccessDeniedException('You must be logged in.');
         }
 
         $this->denyAccessUnlessGranted('view_lesson', $lesson);
 
-        // Récupérer la progression de l'utilisateur
+        // Get the user's progression
         $progression = $em->getRepository(Progression::class)->findOneBy([
             'user' => $user,
             'lesson' => $lesson,
         ]);
 
         if (!$progression) {
-            // Si aucune progression n'existe, on en crée une nouvelle
+            // If no progression exists, create a new one
             $progression = new Progression();
             $progression->setUser($user)
                 ->setLesson($lesson)
@@ -191,26 +192,25 @@ class ProfileController extends AbstractController
         ]);
     }
 
-       
-
-
+    // Displays the user's invoices
     #[Route('/invoices', name: 'user_invoices')]
     public function invoices(BillingRepository $billingRepository): Response
     {   
         $user = $this->getUser();
 
         if (!$user) {
-            throw $this->createAccessDeniedExeption('Vous devez être connecté.');
+            throw $this->createAccessDeniedException('You must be logged in.');
         }
         return $this->render('user/invoices.html.twig', [
             'billings' => $billingRepository->findAll(),
         ]);
     }
 
+    // Displays the user's certificates
     #[Route('/certificates', name: 'user_certificates')]
     public function certificates(): Response
     {
-        // Afficher les certifications de l'utilisateur
+        // Display the user's certificates
         return $this->render('user/certificates.html.twig');
     }
 }

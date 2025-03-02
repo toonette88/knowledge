@@ -4,14 +4,17 @@
 
 {% block admin_content %}
     <div class="container py-4">
+        <!-- Display success flash messages -->
         {% for message in app.flashes('success') %}
             <div class="alert alert-success">
                 {{ message }}
             </div>
         {% endfor %}
+        
+        <!-- Title of the page -->
         <h2 class="text-center mb-4" style="color: #00497c;">Liste des utilisateurs</h2>
 
-        {# Formulaire de recherche #}
+        {# Search form for filtering users by name #}
         <form method="get" action="{{ path('admin_user_list') }}" class="mb-4 d-flex justify-content-center">
             <div class="input-group" style="max-width: 400px;">
                 <input type="text" id="search" name="search" value="{{ search }}" class="form-control" placeholder="Rechercher par nom">
@@ -19,25 +22,28 @@
             </div>
         </form>
 
-        {# Tableau des utilisateurs #}
+        {# Table displaying the list of users #}
         <div class="table-responsive">
             <table class="table table-bordered text-center align-middle" style="background-color: #f1f8fc;">
                 <thead style="background-color: #0074c7; color: white;">
                     <tr>
-                        <th>Nom</th>
-                        <th>Prénom</th>
-                        <th>Actions</th>
+                        <th>Nom</th>  <!-- Column for user last name -->
+                        <th>Prénom</th>  <!-- Column for user first name -->
+                        <th>Actions</th>  <!-- Column for user actions -->
                     </tr>
                 </thead>
                 <tbody>
                     {% for user in pagination %}
                         <tr>
-                            <td>{{ user.name }}</td>
-                            <td>{{ user.firstName }}</td>
+                            <td>{{ user.name }}</td>  <!-- User's last name -->
+                            <td>{{ user.firstName }}</td>  <!-- User's first name -->
                             <td>
+                                <!-- Link to view the user profile -->
                                 <a href="{{ path('admin_user_show', { id: user.id }) }}" class="btn btn-sm text-white" style="background-color: #82b864;">Voir</a>
+                                
+                                <!-- Form to delete the user -->
                                 <form action="{{ path('admin_user_delete', {id: user.id}) }}" method="post" name="delete_user_form_{{ user.id }}" style="display: inline;">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">  <!-- CSRF token for security -->
                                     <button type="submit" class="btn text-white px-4" style="background-color: #cd2c2e; border: none;">
                                         Supprimer
                                     </button>
@@ -45,6 +51,7 @@
                             </td>
                         </tr>
                     {% else %}
+                        <!-- Message when no users are found -->
                         <tr>
                             <td colspan="3" class="text-center text-muted">Aucun utilisateur trouvé</td>
                         </tr>
@@ -53,7 +60,7 @@
             </table>
         </div>
 
-        {# Pagination #}
+        {# Pagination controls to navigate between pages #}
         <div class="d-flex justify-content-center mt-3">
             {{ knp_pagination_render(pagination) }}
         </div>

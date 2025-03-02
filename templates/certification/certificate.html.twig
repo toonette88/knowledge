@@ -5,91 +5,108 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Certification de {{ certification.course.title }}</title>
     <style>
+        /* Basic styling for the entire body */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f1f8fc;
-            color: #384050;
+            background-color: #f1f8fc; /* Light blue background */
+            color: #384050; /* Dark gray text color */
         }
 
+        /* Container for the certificate content */
         .certificate-container {
             width: 90%;
             max-width: 1000px;
             margin: 20px auto;
             background-color: white;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
             padding: 20px;
             text-align: center;
-            border: 3px solid #0074c7;
+            border: 3px solid #0074c7; /* Blue border */
         }
 
+        /* Header style for the certificate title */
         .certificate-header {
             font-size: 2.2em;
             font-weight: bold;
-            color: #0074c7;
+            color: #0074c7; /* Blue color for emphasis */
             margin-bottom: 15px;
         }
 
+        /* Subtitle style for the certificate */
         .certificate-subtitle {
             font-size: 1.3em;
             font-style: italic;
-            color: #0074c7;
+            color: #0074c7; /* Blue color for emphasis */
             margin-bottom: 30px;
         }
 
+        /* Main content of the certificate */
         .certificate-content {
             font-size: 1.2em;
             margin-bottom: 40px;
-            line-height: 1.5;
+            line-height: 1.5; /* Spacing for readability */
         }
 
+        /* Styling for the user's name */
         .user-name {
             font-size: 1.4em;
             font-weight: bold;
-            color: #0074c7;
+            color: #0074c7; /* Blue color for user's name */
             margin-top: 10px;
         }
 
+        /* Styling for the course name */
         .course-name {
             font-size: 1.3em;
             margin-top: 5px;
             font-weight: bold;
         }
 
+        /* Date when the certificate was issued */
         .date-issued {
             font-size: 1.1em;
             margin-top: 30px;
-            color: #384050;
+            color: #384050; /* Dark gray text for the date */
         }
 
+        /* Footer section for additional info */
         .footer {
             margin-top: 20px;
             font-size: 1em;
-            color: #384050;
+            color: #384050; /* Dark gray color */
         }
 
+        /* Signature section at the bottom of the certificate */
         .signature {
             margin-top: 40px;
             font-size: 1.1em;
-            color: #0074c7;
+            color: #0074c7; /* Blue color for signature */
             font-weight: bold;
         }
 
+        /* Logo image styling */
         .logo {
             width: 80px;
             margin-bottom: 15px;
         }
-
     </style>
 </head>
 <body>
+    <!-- Certificate container -->
     <div class="certificate-container">
+        <!-- Logo of the organization -->
         <img src="{{ asset('images/logo.jpeg') }}" alt="Logo" class="logo">
+        
+        <!-- Title of the certificate -->
         <div class="certificate-header">Certificat de Réussite</div>
+        
+        <!-- Subtitle stating the certification is awarded -->
         <div class="certificate-subtitle">Nous avons le plaisir de certifier</div>
         
+        <!-- Main content showing the recipient's name and the course title -->
         <div class="certificate-content">
             Ce certificat est attribué à
             <div class="user-name">{{ certification.user.firstName }} {{ certification.user.name }}</div>
@@ -97,8 +114,10 @@
             <div class="course-name">{{ certification.course.title }}</div>
         </div>
         
+        <!-- Date when the certificate was issued -->
         <div class="date-issued">Délivré le : {{ certification.dateObtained|date("d F Y") }}</div>
 
+        <!-- Footer with the signature line -->
         <div class="footer">
             <div class="signature">Signature de l'Administrateur</div>
         </div>

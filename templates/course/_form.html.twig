@@ -1,25 +1,41 @@
 {{ form_start(form) }}
+    <!-- Title field -->
     <div class="mb-3">
+        <!-- Label for the title field, with a custom class for styling -->
         {{ form_label(form.title, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+        <!-- The actual form widget (input field) for the title, with a custom class for styling -->
         {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
     </div>
 
+    <!-- Description field -->
     <div class="mb-3">
+        <!-- Label for the description field -->
         {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+        <!-- The actual form widget (textarea or input field) for the description -->
         {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
     </div>
 
+    <!-- Price field -->
     <div class="mb-3">
+        <!-- Label for the price field -->
         {{ form_label(form.price, 'Prix', {'label_attr': {'class': 'form-label'}}) }}
+        <!-- The actual form widget (input field) for the price -->
         {{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}
     </div>
 
+    <!-- Category field -->
     <div class="mb-3">
+        <!-- Label for the category field -->
         {{ form_label(form.category, 'Catégorie', {'label_attr': {'class': 'form-label'}}) }}
+        <!-- The actual form widget (dropdown/select) for the category -->
         {{ form_widget(form.category, {
             'attr': {'class': 'form-control'}
         }) }}
     </div>
 
-    <button class="btn btn-success">{{ button_label|default('Enregistrer') }}</button>
+    <!-- Submit button -->
+    <button class="btn btn-success">
+        <!-- Button label, defaults to 'Enregistrer' if not provided -->
+        {{ button_label|default('Enregistrer') }}
+    </button>
 {{ form_end(form) }}

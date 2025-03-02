@@ -7,15 +7,19 @@
         <h1>Bienvenue sur votre profil, {{ app.user.name }} {{ app.user.firstname }} !</h1>
         
         <div class="list-group">
+            <!-- Link to user information -->
             <a href="{{ path('user_informations') }}" class="list-group-item list-group-item-action">
                 Mes informations
             </a>
+            <!-- Link to user courses -->
             <a href="{{ path('user_lessons') }}" class="list-group-item list-group-item-action">
                 Mes cours
             </a>
+            <!-- Link to user invoices -->
             <a href="{{ path('user_invoices') }}" class="list-group-item list-group-item-action">
                 Mes factures
             </a>
+            <!-- Link to user certifications -->
             <a href="{{ path('profile_course') }}" class="list-group-item list-group-item-action">
                 Mes certifications
             </a>

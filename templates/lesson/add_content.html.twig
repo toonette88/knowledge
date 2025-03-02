@@ -3,19 +3,24 @@
 {% block title %}Ajouter un Contenu{% endblock %}
 
 {% block admin_content %}
+    {# Title of the page: "Ajouter une Partie de Contenu" translates to "Add a Content Part" #}
     <h3 class="text-primary">Ajouter une Partie de Contenu</h3>
 
+    {# Start the form with the 'form-horizontal' class for styling #}
     {{ form_start(form, { 'attr': {'class': 'form-horizontal'} }) }}
 
+        {# Input field for content: Using the 'form-control' class for styling and a placeholder for the content input #}
         <div class="mb-3">
             {{ form_row(form.content, { 'attr': { 'class': 'form-control', 'placeholder': 'Contenu de la partie' } }) }}
         </div>
 
+        {# Submit button to add the content #}
         <div class="mb-3">
             <button type="submit" class="btn btn-primary">Ajouter le Contenu</button>
         </div>
     {{ form_end(form) }}
 
+    {# Link to return to the lesson page, passing the lesson ID and part #}
     <a href="{{ path('app_lesson_show', { 'id': lesson.id, 'part': 1 }) }}" class="btn btn-secondary">
         <i class="fas fa-arrow-left"></i> Retour à la leçon
     </a>

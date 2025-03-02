@@ -9,17 +9,21 @@ use Symfony\Component\Mime\Email;
 
 class TestEmailController extends AbstractController
 {
+    // Sends a test email using Mailtrap and Symfony Mailer
     public function sendTestEmail(MailerInterface $mailer): Response
     {
+        // Create a new email instance
         $email = (new Email())
-            ->from('test@example.com')
-            ->to('recipient@example.com')
-            ->subject('Test Email via Mailtrap')
-            ->text('Ceci est un test d\'envoi d\'email avec Mailtrap et Symfony Mailer.')
-            ->html('<p>Ceci est un test d\'envoi d\'email avec <strong>Mailtrap</strong> et Symfony Mailer.</p>');
+            ->from('test@example.com') // Sender email address
+            ->to('recipient@example.com') // Recipient email address
+            ->subject('Test Email via Mailtrap') // Subject of the email
+            ->text('Ceci est un test d\'envoi d\'email avec Mailtrap et Symfony Mailer.') // Plain text version of the email
+            ->html('<p>Ceci est un test d\'envoi d\'email avec <strong>Mailtrap</strong> et Symfony Mailer.</p>'); // HTML version of the email
 
+        // Send the email using Symfony Mailer
         $mailer->send($email);
 
-        return new Response('Email envoyé avec succès ! Vérifiez votre boîte Mailtrap.');
+        // Return a response indicating that the email was sent successfully
+        return new Response('Email sent successfully! Check your Mailtrap inbox.');
     }
 }
