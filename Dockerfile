@@ -15,9 +15,9 @@ RUN apt-get update && apt-get install -y \
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Installation de Symfony CLI
-RUN curl -sS https://get.symfony.com/cli/installer | bash && \
-    mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+# Installation manuelle de Symfony CLI
+RUN curl -sSLo /usr/local/bin/symfony https://github.com/symfony/cli/releases/latest/download/symfony_linux_amd64 && \
+    chmod +x /usr/local/bin/symfony
 
 # Définition du répertoire de travail
 WORKDIR /var/www/html
