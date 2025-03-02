@@ -14,18 +14,22 @@ class Progression
     #[ORM\Column]
     private ?int $id = null;
 
+    // Many-to-one relationship with the User entity, representing the user whose progression is being tracked
     #[ORM\ManyToOne(inversedBy: 'progressions')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    // Many-to-one relationship with the Lesson entity, representing the lesson whose progression is tracked
     #[ORM\ManyToOne(targetEntity: Lesson::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Lesson $lesson = null;
 
+    // The chapter number, can be null, but if provided, must be a non-negative integer
     #[ORM\Column(nullable: true)]
     #[Assert\PositiveOrZero(message: 'Le chapitre doit être un entier positif ou nul.')]
     private ?int $chapter = null;
 
+    // The percentage of completion for the lesson, must be between 0 and 100
     #[ORM\Column(nullable: true)]
     #[Assert\Range(
         min: 0,
@@ -34,11 +38,13 @@ class Progression
     )]
     private ?int $percentage = null;
 
+    // Getter and setter for ID
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    // Getter and setter for the associated User entity
     public function getUser(): ?User
     {
         return $this->user;
@@ -51,6 +57,7 @@ class Progression
         return $this;
     }
 
+    // Getter and setter for the associated Lesson entity
     public function getLesson(): ?Lesson
     {
         return $this->lesson;
@@ -59,9 +66,11 @@ class Progression
     public function setLesson(?Lesson $lesson): static
     {
         $this->lesson = $lesson;
+
         return $this;
     }
 
+    // Getter and setter for the chapter number
     public function getChapter(): ?int
     {
         return $this->chapter;
@@ -74,6 +83,7 @@ class Progression
         return $this;
     }
 
+    // Getter and setter for the progression percentage
     public function getPercentage(): ?float
     {
         return $this->percentage;

@@ -37,10 +37,10 @@ class RegistrationTest extends WebTestCase
     {
         $client = static::createClient();
     
-        // Accéder à la page d'inscription
+        // Access the registration page
         $crawler = $client->request('GET', '/register');
     
-        // Remplir le formulaire avec des données valides
+        // Fill in the form with valid data
         $form = $crawler->selectButton('Créer un compte')->form([
             'registration_form[email]' => 'newuser@example.com',
             'registration_form[name]' => 'newuser',
@@ -49,25 +49,23 @@ class RegistrationTest extends WebTestCase
             'registration_form[plainPassword][second]' => 'newpassword1234',
         ]);
     
-        // Soumettre le formulaire
+        // Submit the form
         $client->submit($form);
  
-    
-        // Suivre la redirection et vérifier le contenu de la page d'accueil
+        // Follow the redirection and check the content of the home page
         $client->followRedirect();
-        $this->assertSelectorTextContains('h2', 'Page authentifiée');
+        $this->assertSelectorTextContains('h2', 'Bienvenue');
     }
     
-
     // Test for failed registration with mismatched passwords
     public function testRegistrationWithMismatchedPasswords(): void
     {
         $client = static::createClient();
 
-        // Accéder à la page d'inscription
+        // Access the registration page
         $crawler = $client->request('GET', '/register');
 
-        // Remplir le formulaire avec des mots de passe différents
+        // Fill in the form with mismatched passwords
         $form = $crawler->selectButton('Créer un compte')->form([
             'registration_form[email]' => 'newuser2@example.com',
             'registration_form[name]' => 'newuser',
@@ -76,10 +74,10 @@ class RegistrationTest extends WebTestCase
             'registration_form[plainPassword][second]' => 'wrongpassword',
         ]);
 
-        // Soumettre le formulaire
+        // Submit the form
         $client->submit($form);
 
-        // Vérifier qu'un message d'erreur est affiché
+        // Check that an error message is displayed
         $this->assertSelectorTextContains('main li', 'Les mots de passe doivent correspondre');
     }
 
@@ -92,7 +90,7 @@ class RegistrationTest extends WebTestCase
         // Request the registration page
         $crawler = $client->request('GET', '/register');
 
-        // Fill in the form with the used email
+        // Fill in the form with a used email
         $form = $crawler->selectButton('Créer un compte')->form([
             'registration_form[email]' => 'user2@example.fr',  // Used email
             'registration_form[name]' => 'newuser',
@@ -110,7 +108,4 @@ class RegistrationTest extends WebTestCase
         // Assert that the error message is shown
         $this->assertSelectorTextContains('main li', 'Il existe déjà un compte avec cet e-mail');
     }
-
-
 }
-

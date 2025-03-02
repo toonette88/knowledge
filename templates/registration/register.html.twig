@@ -4,40 +4,52 @@
 
 {% block body %}
     <div class="d-flex justify-content-center my-5">
-    <div class="border border-black">
-        {% for flash_error in app.flashes('verify_email_error') %}
-            <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-        {% endfor %}
+        <div class="border border-black">
+            <!-- Display any flash error messages related to email verification -->
+            {% for flash_error in app.flashes('verify_email_error') %}
+                <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+            {% endfor %}
 
-        <div class="border-bottom border-primary-subtle p-1 mx-2">
-            <h2>S'inscrire</h2>
-        </div>
-        <div class="p-2">
-            {{ form_start(registrationForm) }}
-            {{ form_errors(registrationForm) }}
+            <!-- Section heading for registration -->
+            <div class="border-bottom border-primary-subtle p-1 mx-2">
+                <h2>S'inscrire</h2>
+            </div>
             <div class="p-2">
-                {{ form_row(registrationForm.email) }}
-                {{ form_row(registrationForm.name)  }}
-                {{ form_row(registrationForm.firstname)  }}
-            </div>
-          
-            <div class="p-2 mt-3 border-bottom border-primary-subtle">
+                <!-- Start of registration form -->
+                {{ form_start(registrationForm) }}
+                
+                <!-- Display form errors -->
+                {{ form_errors(registrationForm) }}
+                
                 <div class="p-2">
-                    {{ form_row(registrationForm.plainPassword.first) }}
+                    <!-- Fields for email, name, and firstname -->
+                    {{ form_row(registrationForm.email) }}
+                    {{ form_row(registrationForm.name) }}
+                    {{ form_row(registrationForm.firstname) }}
                 </div>
-                <div class="p-2">
-                    {{ form_row(registrationForm.plainPassword.second) }}
+              
+                <div class="p-2 mt-3 border-bottom border-primary-subtle">
+                    <div class="p-2">
+                        <!-- Password input fields -->
+                        {{ form_row(registrationForm.plainPassword.first) }}
+                    </div>
+                    <div class="p-2">
+                        {{ form_row(registrationForm.plainPassword.second) }}
+                    </div>
+                    <!-- Submit button -->
+                    <button class="btn border border-black p-2" type="submit" id="submitButton">
+                        Créer un compte
+                    </button><br>
+                    
+                    <!-- End of registration form -->
+                    {{ form_end(registrationForm) }}
                 </div>
-                <button class="btn border border-black p-2" type="submit" id="submitButton" >
-                    Créer un compte
-                </button></br>
-                {{ form_end(registrationForm) }}
+                <div class="py-3 px-2">
+                    <!-- Link to login page for existing users -->
+                    <label for="inputBtn">Déjà inscrit ?</label><br>
+                    <a class="btn border border-black" href="{{ path('app_login') }}">Se Connecter</a>
+                </div>     
             </div>
-            <div class="py-3 px-2">
-                <label for="inputBtn">Déjà inscrit ?</label></br>
-                <a class="btn border border-black" href="{{ path('app_login')}}">Se Connecter</a>
-            </div>     
         </div>
     </div>
-</div>
 {% endblock %}

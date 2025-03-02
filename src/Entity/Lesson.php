@@ -17,27 +17,32 @@ class Lesson
     #[ORM\Column]
     private ?int $id = null;
 
+    // Many-to-one relation with Course
     #[ORM\ManyToOne(targetEntity: Course::class, inversedBy: 'lessons')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private ?Course $course = null;
 
+    // Title of the lesson, with validation rules for non-empty and max length
     #[ORM\Column(length: 55)]
-    #[Assert\NotBlank(message: 'Le titre ne peut pas être vide.')]
+    #[Assert\NotBlank(message: 'The title cannot be empty.')]
     #[Assert\Length(
         max: 55,
-        maxMessage: 'Le titre ne peut pas dépasser {{ limit }} caractères.'
+        maxMessage: 'The title cannot exceed {{ limit }} characters.'
     )]
     private ?string $title = null;
 
+    // Price of the lesson
     #[ORM\Column]
     private ?int $price = null;
 
+    // One-to-many relation with LessonContent
     /**
      * @var Collection<int, LessonContent>
      */
     #[ORM\OneToMany(targetEntity: LessonContent::class, mappedBy: 'lesson', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $contents;
 
+    // Constructor initializing contents collection
     public function __construct()
     {
         $this->contents = new ArrayCollection();
@@ -48,6 +53,7 @@ class Lesson
         return $this->id;
     }
 
+    // Getter and setter for Course
     public function getCourse(): ?Course
     {
         return $this->course;
@@ -60,6 +66,7 @@ class Lesson
         return $this;
     }
 
+    // Getter and setter for Title
     public function getTitle(): ?string
     {
         return $this->title;
@@ -72,6 +79,7 @@ class Lesson
         return $this;
     }
 
+    // Getter and setter for Price
     public function getPrice(): ?int
     {
         return $this->price;
@@ -84,6 +92,7 @@ class Lesson
         return $this;
     }
 
+    // Getter for Contents
     /**
      * @return Collection<int, LessonContent>
      */
@@ -92,12 +101,14 @@ class Lesson
         return $this->contents;
     }
 
+    // One-to-many relation with Progression
     /**
      * @return Collection<int, Progression>
      */
     #[ORM\OneToMany(mappedBy: 'lesson', targetEntity: Progression::class)]
     private Collection $progressions;
 
+    // Method to add LessonContent
     public function addContent(LessonContent $content): static
     {
         if (!$this->contents->contains($content)) {
@@ -108,23 +119,25 @@ class Lesson
         return $this;
     }
 
+    // Method to remove LessonContent
     public function removeContent(LessonContent $content): self
     {
         if ($this->contents->removeElement($content)) {
-            // Vérifie si l'élément est bien retiré
             if ($content->getLesson() === $this) {
-                $content->setLesson(null); // Dissocier proprement
+                $content->setLesson(null);
             }
         }
     
         return $this;
     }
 
+    // Getter for Progressions
     public function getProgressions(): Collection
     {
         return $this->progressions;
     }
 
+    // Method to get the progression of a specific user in the lesson
     public function getUserProgression(User $user): ?float
     {
         foreach ($this->progressions as $progression) {
@@ -132,7 +145,6 @@ class Lesson
                 return $progression->getPercentage();
             }
         }
-        return 0.0; // Retourne 0 si aucune progression n'est trouvée
+        return 0.0; // Return 0 if no progression is found
     }
-
 }

@@ -1,18 +1,22 @@
 {{ form_start(form) }}
+    {# Title input field: Label is "Titre" and it has a form-control class for styling #}
     <div class="mb-3">
         {{ form_label(form.title, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
         {{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
     </div>
+    {# Course input field: Label is "Course" and it has a form-control class for styling #}
     <div class="mb-3">
         {{ form_label(form.course, 'Course', {'label_attr': {'class': 'form-label'}}) }}
         {{ form_widget(form.course, {
             'attr': {'class': 'form-control'}
         }) }}
     </div>
+    {# Price input field: Label is "Prix" and it has a form-control class for styling #}
      <div class="mb-3">
         {{ form_label(form.price, 'Prix', {'label_attr': {'class': 'form-label'}}) }}
         {{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}
     </div>
 
+    {# Submit button: Displays the button with label "Enregistrer" or a custom button label if provided #}
     <button class="btn btn-success">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}

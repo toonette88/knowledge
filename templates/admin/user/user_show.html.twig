@@ -4,18 +4,29 @@
 
 {% block admin_content %}
 <div class="container py-5">
+    <!-- Page Title -->
     <h3 class="mb-4">Détails de l'utilisateur</h3>
 
-    <!-- Informations Utilisateur -->
+    <!-- User Information Card -->
     <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">{{ user.name }} {{ user.firstName }}</h5>
-            <p>Email : {{ user.email }}</p>
-            <p>Date d'inscription : {{ user.createdAt|date('d/m/Y') }}</p>
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="card-title">{{ user.name }} {{ user.firstName }}</h5>
+                <p>Email : {{ user.email }}</p>
+                <p>Date d'inscription : {{ user.createdAt|date('d/m/Y') }}</p>
+            </div>
+            
+            <!-- Delete User Button (Aligned Right) -->
+            <form action="{{ path('admin_user_delete', { 'id': user.id }) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> Supprimer
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- Onglets -->
+    <!-- Tabs for Orders and Courses -->
     <ul class="nav nav-tabs" id="userDetailsTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <a class="nav-link active" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="true">Commandes</a>
@@ -26,7 +37,7 @@
     </ul>
 
     <div class="tab-content mt-3" id="userDetailsTabsContent">
-        <!-- Commandes -->
+        <!-- Orders Tab -->
         <div class="tab-pane fade show active" id="orders" role="tabpanel" aria-labelledby="orders-tab">
             <h4 class="mb-3">Commandes de l'utilisateur</h4>
             <div class="list-group">
@@ -42,16 +53,17 @@
                         </div>
                     </div>
                 {% else %}
+                    <!-- Message when no orders are found -->
                     <p>Aucune commande trouvée.</p>
                 {% endfor %}
             </div>
-            {# Pagination, si nécessaire #}
+            {# Pagination, if needed #}
             <div class="mt-3">
                 {{ knp_pagination_render(orders) }}
             </div>
         </div>
 
-       <!-- Cursus -->
+       <!-- Courses Tab -->
         <div class="tab-pane fade" id="courses" role="tabpanel" aria-labelledby="courses-tab">
             <h4 class="mb-3">Cursus achetés</h4>
             <ul class="list-group">
@@ -77,7 +89,7 @@
                             </div>
                         </div>
                         
-                        <!-- Accordéon pour afficher les leçons -->
+                        <!-- Accordion to show lessons -->
                         <div class="accordion mt-3" id="courseAccordion{{ courseWithProgression.course.id }}">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
@@ -108,6 +120,7 @@
                         </div>
                     </li>
                 {% else %}
+                    <!-- Message when no courses are found -->
                     <p>Aucun cursus acheté trouvé.</p>
                 {% endfor %}
             </ul>

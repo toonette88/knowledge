@@ -9,12 +9,13 @@
     <link rel="stylesheet" href="{{ asset('styles/app.css') }}">
 
     <style>
+        /* Body styling */
         body {
             background-color: #f1f8fc;
             color: #384050;
-            font-family: Arial, sans-serif;
         }
-        
+
+        /* Header styling */
         header {
             background-color: #0074c7;
             color: white;
@@ -22,30 +23,35 @@
             text-align: center;
         }
 
+        /* Main header styling (h1) */
         h1 {
             color: #00497c;
             text-align: center;
             margin-bottom: 30px;
         }
 
+        /* Link styling */
         a, a:hover, a:focus {
             text-decoration: none;
             color: #0074c7;
         }
 
+        /* Button primary styling */
         .btn-primary {
             background-color: #0074c7;
             border-color: #0074c7;
         }
 
+        /* Button primary hover effect */
         .btn-primary:hover {
             background-color: #00497c;
         }
 
+        /* Card component styling */
         .card {
-        border-radius: 16px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
     </style>
 
@@ -62,7 +68,7 @@
     </main>
 
     {% block javascripts %}
-        <script src="{{ asset('/js/bootstrap.bundle.js') }}"></script>
+        <script src="{{ asset('/js/bootstrap.bundle.js') }}" nonce="{{ app.request.attributes.get('csp_nonce') }}"></script>
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
 </body>

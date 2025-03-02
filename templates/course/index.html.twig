@@ -3,11 +3,13 @@
 {% block title %}Liste des Cursus{% endblock %}
 
 {% block admin_content %}
+    <!-- Page title for the courses list page -->
     <h3 class="mb-4">Liste des Cursus</h3>
 
+    <!-- Link to create a new course -->
     <a href="{{ path('app_course_new') }}" class="btn btn-primary">Créer un nouveau cursus</a>
 
-
+    <!-- Table to display the list of courses -->
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -22,6 +24,7 @@
             </thead>
             <tbody>
                 {% for course in courses %}
+                    <!-- Loop through each course and display its details -->
                     <tr>
                         <td>{{ course.id }}</td>
                         <td>{{ course.title }}</td>
@@ -29,12 +32,16 @@
                         <td>{{ course.price }}</td>
                         <td>{{ course.createdAt ? course.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                         <td>
+                            <!-- Link to view the course details -->
                             <a href="{{ path('app_course_show', {'id': course.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                            <!-- Link to edit the course -->
                             <a href="{{ path('app_course_edit', {'id': course.id}) }}" class="btn btn-sm btn-warning">Éditer</a>
+                            <!-- Link to delete the course -->
                             <a href="{{ path('app_course_delete', {'id': course.id}) }}" class="btn btn-sm btn-danger">Supprimer</a>
                         </td>
                     </tr>
                 {% else %}
+                    <!-- Message if no courses are found -->
                     <tr>
                         <td colspan="6" class="text-center">Aucun cursus trouvé</td>
                     </tr>
@@ -43,5 +50,4 @@
         </table>
     </div>
 
-   
 {% endblock %}

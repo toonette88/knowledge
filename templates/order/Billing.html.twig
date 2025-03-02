@@ -4,8 +4,12 @@
 
 {% block body %}
 <div class="container mt-5">
+    <!-- Page Title -->
     <h2 class="text-center mb-4" style="color: #0074c7;">Mes Factures</h2>
+
+    {# Check if there are any billings to display #}
     {% if billings|length > 0 %}
+        <!-- Table displaying billing details -->
         <table class="table table-bordered">
             <thead style="background-color: #f1f8fc; color: #384050;">
                 <tr>
@@ -16,16 +20,19 @@
                 </tr>
             </thead>
             <tbody>
+                {# Loop through each billing and display the details #}
                 {% for billing in billings %}
                     <tr>
                         <td>{{ billing.createdAt|date('d/m/Y H:i') }}</td>
                         <td>{{ billing.amount }} €</td>
                         <td>
+                            {# Display payment status with different badge color #}
                             <span class="badge {% if billing.status == 'paid' %}bg-success{% else %}bg-danger{% endif %}">
                                 {{ billing.status == 'paid' ? 'Payé' : 'En attente' }}
                             </span>
                         </td>
                         <td>
+                            <!-- Button to download the invoice -->
                             <a href="{{ path('billing_download_invoice', { 'billingId': billing.id }) }}" class="btn btn-primary btn-sm" style="background-color: #0074c7; border-color: #0074c7;">
                                 Télécharger la facture
                             </a>
@@ -35,8 +42,11 @@
             </tbody>
         </table>
     {% else %}
+        <!-- Message if there are no billings available -->
         <p class="text-center mt-3" style="color: #384050;">Aucune facture disponible pour l'instant.</p>
     {% endif %}
+
+    <!-- Button to go back to the course catalog -->
     <div class="text-center mt-4">
         <a href="{{ path('course_catalog') }}" class="btn btn-secondary" style="background-color: #f1f8fc; border-color: #0074c7; color: #0074c7;">
             Retour au catalogue

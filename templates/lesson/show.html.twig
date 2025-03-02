@@ -4,24 +4,25 @@
 
 {% block admin_content %}
 <div class="container mt-4">
-    <!-- En-tête avec Titre + Boutons -->
+    <!-- Header with Title + Buttons -->
     <div class="d-flex justify-content-between align-items-center">
         <h3 class="text-primary fw-bold">{{ lesson.title }}</h3>
         <div>
+            {# Include the delete form for the lesson #}
             {{ include('lesson/_delete_form.html.twig', { 'lesson': lesson }) }}
 
-            <!-- Bouton Modifier -->
+            <!-- Edit Button -->
             <a href="{{ path('app_lesson_edit', { id: lesson.id }) }}" class="btn btn-warning me-2">
                 <i class="fas fa-edit"></i> Modifier la leçon
             </a>
-            <!-- Bouton Ajouter un contenu -->
+            <!-- Add Content Button -->
             <a href="{{ path('app_lesson_add_content', { id: lesson.id }) }}" class="btn btn-success">
                 <i class="fas fa-plus"></i> Ajouter un contenu
             </a>
         </div>
     </div>
 
-    <!-- Informations Clés -->
+    <!-- Key Information Card -->
     <div class="card mt-3 p-3 shadow-sm">
         <div class="row">
             <div class="col-md-4">
@@ -36,8 +37,9 @@
         </div>
     </div>
 
-    <!-- Onglets Bootstrap -->
+    <!-- Bootstrap Tabs -->
     <ul class="nav nav-tabs mt-4" id="lessonTabs" role="tablist">
+        {# Loop through each content part and create a tab for it #}
         {% for content in contents %}
             <li class="nav-item" role="presentation">
                 <button class="nav-link {% if loop.first %}active{% endif %}" 
@@ -50,8 +52,9 @@
         {% endfor %}
     </ul>
 
-    <!-- Contenu des onglets -->
+    <!-- Tab Content -->
     <div class="tab-content mt-3">
+        {# Loop through each content and display it in the corresponding tab #}
         {% for content in contents %}
             <div class="tab-pane fade {% if loop.first %}show active{% endif %}" 
                  id="content-{{ loop.index }}" role="tabpanel">
@@ -63,7 +66,7 @@
         {% endfor %}
     </div>
 
-    <!-- Bouton Retour -->
+    <!-- Return Button -->
     <div class="mt-4">
         <a href="{{ path('app_lesson_index') }}" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left"></i> Retour aux leçons

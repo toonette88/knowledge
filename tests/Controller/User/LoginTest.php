@@ -49,9 +49,9 @@ class LoginTest extends WebTestCase
         // Check that the user is redirected to the homepage after successful login
         $this->assertResponseRedirects('/');
 
-        // Follow the redirect and check that the authenticated page contains the text "Page authentifiée"
+        // Follow the redirect and check that the authenticated page contains the text "Bienvenue"
         $client->followRedirect();
-        $this->assertSelectorTextContains('h2', 'Page authentifiée');
+        $this->assertSelectorTextContains('h2', 'Bienvenue');
     }
 
     // Test for failed login with invalid credentials

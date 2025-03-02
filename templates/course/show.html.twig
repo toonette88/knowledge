@@ -3,9 +3,12 @@
 {% block title %}Détails du Cursus{% endblock %}
 
 {% block admin_content %}
+    <!-- Card containing the course details -->
     <div class="card shadow-sm p-4">
+        <!-- Title of the page displaying "Course Details" -->
         <h3 class="mb-4 text-primary">Détails du cursus</h3>
 
+        <!-- Table displaying the details of the course -->
         <table class="table table-bordered">
             <tbody>
                 <tr>
@@ -31,14 +34,21 @@
             </tbody>
         </table>
 
+        <!-- Buttons for navigating back to the course list, editing the course, and deleting the course -->
         <div class="d-flex justify-content-between mt-4">
+            <!-- Back to the course list -->
             <a href="{{ path('app_course_index') }}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left"></i> Retour à la liste
             </a>
+
+            <!-- Edit and delete buttons for the course -->
             <div>
+                <!-- Edit button with a pencil icon -->
                 <a href="{{ path('app_course_edit', {'id': course.id}) }}" class="btn btn-warning me-2">
                     <i class="bi bi-pencil"></i> Modifier
                 </a>
+
+                <!-- Include delete form with a danger button to delete the course -->
                 {{ include('course/_delete_form.html.twig', { 'class': 'btn btn-danger' }) }}
             </div>
         </div>

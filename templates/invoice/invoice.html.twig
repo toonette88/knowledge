@@ -73,7 +73,7 @@
             color: #666;
         }
 
-        /* Style pour le bouton retour */
+        /* Style for the back button */
         .back-button {
             display: {{ isDownload ? 'none' : 'block' }};
             text-align: center;
@@ -96,6 +96,7 @@
 <body>
 
     <div class="header">
+        {# Display the logo at the top of the page, it provides brand identity #}
         <img src="{{ asset('images/logo.jpeg') }}" alt="Logo" class="logo">
     </div>
 
@@ -103,6 +104,7 @@
         <h1>Facture</h1>
 
         <div class="invoice-details">
+            {# Invoice details section, displaying the invoice number, creation date, and client details #}
             <p><strong>Numéro de facture :</strong> {{ billing.id }}</p>
             <p><strong>Date :</strong> {{ billing.createdAt|date('d/m/Y') }}</p>
             <p><strong>Client :</strong> {{ billing.order.user.name }} {{ billing.order.user.firstname }}</p>
@@ -113,13 +115,16 @@
         <table class="table">
             <thead>
                 <tr>
+                    {# Table headers: product name and unit price #}
                     <th>Produit</th>
                     <th>Prix unitaire</th>
                 </tr>
             </thead>
             <tbody>
+                {# Loop through each order detail and display the product or lesson name and its unit price #}
                 {% for detail in billing.order.orderDetails %}
                     <tr>
+                        {# Check if the detail refers to a course or a lesson and display the appropriate title #}
                         <td>{{ detail.course ? detail.course.title : detail.lesson.title }}</td>
                         <td>{{ detail.unitPrice }} €</td>
                     </tr>
@@ -127,15 +132,17 @@
             </tbody>
         </table>
 
+        {# Total amount for the order displayed below the table #}
         <p class="total">Total : {{ billing.order.total }} €</p>
     </div>
 
     <div class="footer">
+        {# Footer section with a thank-you message and contact information for customer support #}
         <p>Merci pour votre commande !</p>
         <p>Contactez-nous pour toute question ou assistance.</p>
     </div>
 
-    <!-- Bouton retour -->
+    <!-- Back button for navigating to the invoices page, it will be hidden if it's a download view -->
     <div class="back-button">
         <a href="{{ path('user_invoices') }}">Retour aux factures</a>
     </div>

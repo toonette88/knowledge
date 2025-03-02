@@ -4,49 +4,57 @@
 
 {% block admin_content %}
     <div class="container mt-4">
+        <!-- Dashboard Title -->
         <h3 class="mb-4">Tableau de Bord Administratif</h3>
 
         <div class="row g-4">
-            <!-- Statistiques -->
+            <!-- Categories Statistics -->
             <div class="col-md-3">
                 <div class="card h-100">
                     <div class="card-header" style="background-color: #f1f8fc;">Catégories</div>
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ categoryCount }}</h5>
                         <p class="card-text">Total des catégories.</p>
+                        <!-- Link to Category Index -->
                         <a href="{{ path('app_category_index') }}" class="btn btn-light mt-auto">Voir</a>
                     </div>
                 </div>
             </div>
 
+            <!-- Courses Statistics -->
             <div class="col-md-3">
                 <div class="card h-100">
                     <div class="card-header" style="background-color: #f1f8fc;">Cursus</div>
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ courseCount }}</h5>
                         <p class="card-text">Total des cursus disponibles.</p>
+                        <!-- Link to Course Index -->
                         <a href="{{ path('app_course_index') }}" class="btn btn-light mt-auto">Voir</a>
                     </div>
                 </div>
             </div>
 
+            <!-- Lessons Statistics -->
             <div class="col-md-3">
                 <div class="card h-100">
                     <div class="card-header" style="background-color: #f1f8fc;">Leçons</div>
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ lessonCount }}</h5>
                         <p class="card-text">Nombre total de leçons.</p>
+                        <!-- Link to Lesson Index -->
                         <a href="{{ path('app_lesson_index') }}" class="btn btn-light mt-auto">Voir</a>
                     </div>
                 </div>
             </div>
 
+            <!-- Users Statistics -->
             <div class="col-md-3">
                 <div class="card h-100">
                     <div class="card-header" style="background-color: #f1f8fc;">Utilisateurs</div>
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ userCount }}</h5>
                         <p class="card-text">Nombre total d'utilisateurs.</p>
+                        <!-- Link to User List -->
                         <a href="{{ path('admin_users_list') }}" class="btn btn-light mt-auto">Voir</a>
                     </div>
                 </div>
@@ -55,32 +63,37 @@
     </div>
 
     <style>
+        /* Card styling */
         .card {
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* Header style for cards */
         .card-header {
             font-weight: bold;
         }
 
+        /* Card body with flexible layout */
         .card-body {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
+        /* Ensures button is at the bottom of the card */
         .card-body .btn {
-            margin-top: auto; /* Assure que le bouton est toujours en bas de la carte */
+            margin-top: auto; /* Button always at the bottom */
         }
 
-        /* Pour que les cartes aient la même hauteur et largeur */
+        /* Makes sure cards are of equal height and width */
         .row > .col-md-3 {
             display: flex;
             flex-direction: column;
             align-items: stretch;
         }
 
+        /* Background colors for card headers */
         .card-header {
             background-color: #f1f8fc !important;
         }
@@ -101,19 +114,20 @@
             background-color: #f1f8fc !important;
         }
 
-        /* Modifier la couleur des boutons */
+        /* Button styles */
         .btn-light {
             background-color: #f1f8fc;
             border-color: #0074c7;
             color: #0074c7;
         }
 
+        /* Button hover effect */
         .btn-light:hover {
             background-color: #0074c7;
             color: #fff;
         }
 
-        /* Espacement entre les cartes */
+        /* Spacing between cards */
         .g-4 {
             gap: 1.5rem;
         }

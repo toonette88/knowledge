@@ -4,15 +4,20 @@
 
 {% block admin_content %}
     <div class="card shadow-sm p-4">
+        <!-- Page title for the course edit page -->
         <h3 class="mb-4 text-primary">Modifier le Cursus</h3>
 
+        <!-- Include the form for editing the course, with a custom button label 'Mettre à jour' and a custom button class -->
         {{ include('course/_form.html.twig', {'button_label': 'Mettre à jour', 'class': 'btn btn-success'}) }}
 
+        <!-- Buttons for navigation and deletion -->
         <div class="d-flex justify-content-between mt-3">
+            <!-- Link to go back to the course list -->
             <a href="{{ path('app_course_index') }}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left"></i> Retour à la liste
             </a>
 
+            <!-- Include the delete form for the course -->
             {{ include('course/_delete_form.html.twig') }}
         </div>
     </div>

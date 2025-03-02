@@ -12,60 +12,61 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CourseRepository::class)]
 class Course
 {
+    // The unique identifier for the Course entity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    // The title of the course, limited to 55 characters
     #[ORM\Column(length: 55)]
     private ?string $title = null;
 
+    // A detailed description of the course, stored as a TEXT column
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    // The price of the course, stored as an integer
     #[ORM\Column]
     private ?int $price = null;
 
+    // The date the course was created, stored as an immutable DateTime object
     #[ORM\Column(name: "created_at", type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $createdAt = null;
 
+    // Many courses can belong to one category. A course can have one category, which is non-nullable.
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'courses')]
     #[ORM\JoinColumn(name: 'category_id', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private ?Category $category = null;
 
+    // A course can have many lessons. Each lesson is associated with one course.
     #[ORM\OneToMany(mappedBy: 'course', targetEntity: Lesson::class, cascade: ['persist', 'remove'])]
     private Collection $lessons;
 
-    /**
-     * @var Collection<int, OrderDetail>
-     */
+    // A course can have many order details (related to purchases/orders).
     #[ORM\OneToMany(targetEntity: OrderDetail::class, mappedBy: 'course')]
     private Collection $orderDetails;
 
-    /**
-     * @var Collection<int, Progression>
-     */
-    #[ORM\OneToMany(targetEntity: Progression::class, mappedBy: 'course')]
-    private Collection $progressions;
-
-    /**
-     * @var Collection<int, Certification>
-     */
+    // A course can have many certifications (one per user who completes the course).
     #[ORM\OneToMany(targetEntity: Certification::class, mappedBy: 'course', orphanRemoval: true)]
     private Collection $certifications;
 
     public function __construct()
     {
+        // Initialize collections for relationships
         $this->lessons = new ArrayCollection();
         $this->orderDetails = new ArrayCollection();
         $this->certifications = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
     }
 
+    // String representation of the course (usually used for easy display, e.g., in a dropdown)
     public function __toString(): string
     {
         return $this->title;
     }
+
+    // Getters and setters for each property
 
     public function getId(): ?int
     {
@@ -132,9 +133,7 @@ class Course
         return $this->lessons;
     }
 
-    /**
-     * @return Collection<int, OrderDetail>
-     */
+    // Relationship with OrderDetail: a course can have many order details, representing purchases
     public function getOrderDetails(): Collection
     {
         return $this->orderDetails;
@@ -159,50 +158,9 @@ class Course
         }
 
         return $this;
-    }
+    }   
 
-    /**
-     * @return Collection<int, Progression>
-     */
-    public function getProgressions(): Collection
-    {
-        return $this->progressions;
-    }
-
-    public function getUserProgression(User $user): ?int
-    {
-        foreach ($this->progressions as $progression) {
-            if ($progression->getUser() === $user) {
-                return $progression->getPercentage(); // Assumes "percentage" is the field storing the progress
-            }
-        }
-        return 0; // Retourne 0 si aucune progression trouvée
-    }
-    
-    public function addProgression(Progression $progression): static
-    {
-        if (!$this->progressions->contains($progression)) {
-            $this->progressions->add($progression);
-            $progression->setCourse($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProgression(Progression $progression): static
-    {
-        if ($this->progressions->removeElement($progression)) {
-            if ($progression->getCourse() === $this) {
-                $progression->setCourse(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Certification>
-     */
+    // Relationship with Certification: stores the certifications for users completing the course
     public function getCertifications(): Collection
     {
         return $this->certifications;
@@ -229,6 +187,7 @@ class Course
         return $this;
     }
 
+    // Relationship with Lesson: each course has many lessons
     public function addLesson(Lesson $lesson): self
     {
         if (!$this->lessons->contains($lesson)) {

@@ -1,34 +1,52 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <!-- Hidden heading for testing purposes -->
+    <h2 class="visually-hidden">Bienvenue</h2>
+
+    <!-- Hero section: a full-screen background image -->
     <div class="hero"></div>
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
     <style>
+        /* Remove margin and padding, set full height for body and html */
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
-            overflow: hidden; /* Empêche le scroll */
+            overflow: hidden; /* Prevent scrolling */
         }
 
+        /* Hero section styles */
         .hero {
-            position: absolute;
+            position: absolute; /* Position the hero image at the top-left corner */
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100vh;
-            background: url("{{ asset('images/home.png') }}") no-repeat center center;
-            background-size: cover;
-            z-index: -1; /* Place l'image derrière le contenu */
+            width: 100%; /* Full width of the viewport */
+            height: 100vh; /* Full height of the viewport */
+            background: url("{{ asset('images/home.png') }}") no-repeat center center; /* Background image */
+            background-size: cover; /* Make sure the image covers the entire section */
+            z-index: -1; /* Place the image behind the content */
         }
 
-        /* Ajuste le body pour ne pas couvrir la navbar */
+        /* Adjust the main content to not cover the navbar */
         main {
             position: relative;
-            z-index: 1;
+            z-index: 1; /* Ensure the content is above the hero section */
+        }
+
+        /* Visually hidden class for accessibility */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
         }
     </style>
 {% endblock %}
