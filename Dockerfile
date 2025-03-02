@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
 
 # Installation de Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN composer --version
 
 # Installation manuelle de Symfony CLI
 RUN curl -sSLo /usr/local/bin/symfony https://github.com/symfony/cli/releases/latest/download/symfony_linux_amd64 && \
