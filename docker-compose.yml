@@ -1,0 +1,16 @@
+
+services:
+  web:
+    image: symfony-project
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      - COMPOSER_MEMORY_LIMIT=-1
+
+  database:
+    image: mysql:10.4
+    environment:
+      MYSQL_ROOT_PASSWORD: 
