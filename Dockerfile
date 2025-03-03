@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql zip mbstring opcache intl gd
 
 # Installer Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && chmod +x /usr/local/bin/composer
 RUN composer --version
 
 # Définir le répertoire de travail
@@ -15,11 +15,14 @@ WORKDIR /var/www/html
 # Copier les fichiers du projet
 COPY . .
 
-# Installer les dépendances Symfony
-RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
+# Nettoyer le cache Composer
+RUN composer clear-cache
 
-# Configuration des permissions
-RUN chown -R www-data:www-data var && chmod -R 777 var
+# Corriger les permissions
+RUN chown -R www-data:www-data /var/www/html && chmod -R 777 /var/www/html
+
+# Installer les dépendances Symfony
+RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 # Copier la configuration Nginx
 COPY nginx.conf /etc/nginx/nginx.conf
