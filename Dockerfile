@@ -15,13 +15,14 @@ WORKDIR /var/www/html
 # Copier les fichiers du projet
 COPY . .
 
-# Nettoyer le cache Composer
+# Nettoyer le cache Composer et Symfony
 RUN composer clear-cache
+RUN rm -rf var/cache/*
 
 # Corriger les permissions
 RUN chown -R www-data:www-data /var/www/html && chmod -R 777 /var/www/html
 
-# Installer les dépendances Symfony
+# Installer les dépendances Symfony en production
 RUN COMPOSER_MEMORY_LIMIT=-1 composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 # Copier la configuration Nginx
