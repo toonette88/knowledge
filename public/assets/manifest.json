@@ -1,0 +1,23 @@
+{
+    "@symfony\/stimulus-bundle\/controllers.js": "\/assets\/@symfony\/stimulus-bundle\/controllers-INFRT9l.js",
+    "@symfony\/stimulus-bundle\/loader.js": "\/assets\/@symfony\/stimulus-bundle\/loader-djqeLqa.js",
+    "@symfony\/ux-turbo\/turbo_controller.js": "\/assets\/@symfony\/ux-turbo\/turbo_controller-zl4y2v3.js",
+    "@symfony\/ux-turbo\/turbo_stream_controller.js": "\/assets\/@symfony\/ux-turbo\/turbo_stream_controller-UOrik8H.js",
+    "app.js": "\/assets\/app-l89dsVm.js",
+    "bootstrap.js": "\/assets\/bootstrap-fWNU0-I.js",
+    "controllers\/hello_controller.js": "\/assets\/controllers\/hello_controller-h7Y4WCm.js",
+    "fonts\/COMIC.TTF": "\/assets\/fonts\/COMIC-Lg9KCJG.TTF",
+    "images\/favicon.png": "\/assets\/images\/favicon-OBJliLN.png",
+    "images\/home.png": "\/assets\/images\/home-DltgrYK.png",
+    "images\/logo.jpeg": "\/assets\/images\/logo-M4wS5UA.jpeg",
+    "js\/bootstrap.bundle.js": "\/assets\/js\/bootstrap.bundle-Ymb7ite.js",
+    "js\/passwordCheck.js": "\/assets\/js\/passwordCheck-maoG0wF.js",
+    "styles\/app.css": "\/assets\/styles\/app-m8zFo_2.css",
+    "styles\/bootstrap.bundle.js": "\/assets\/styles\/bootstrap.bundle-Ymb7ite.js",
+    "styles\/bootstrap.min.css": "\/assets\/styles\/bootstrap.min-MVVE1yI.css",
+    "vendor\/@hotwired\/stimulus\/stimulus.index.js": "\/assets\/vendor\/@hotwired\/stimulus\/stimulus.index-oUGxBTh.js",
+    "vendor\/@hotwired\/turbo\/turbo.index.js": "\/assets\/vendor\/@hotwired\/turbo\/turbo.index-gQ9E7xo.js",
+    "vendor\/@popperjs\/core\/core.index.js": "\/assets\/vendor\/@popperjs\/core\/core.index-ZE0xRfu.js",
+    "vendor\/bootstrap\/bootstrap.index.js": "\/assets\/vendor\/bootstrap\/bootstrap.index-rt72SdS.js",
+    "vendor\/bootstrap\/dist\/css\/bootstrap.min.css": "\/assets\/vendor\/bootstrap\/dist\/css\/bootstrap.min-FxLwN4-.css"
+}
