@@ -3,7 +3,7 @@ framework:
         public_directory: '%kernel.project_dir%/public'
         cache_dir: '%kernel.cache_dir%/assets'
         manifest_filename: 'manifest.json'
-
+        missing_import_mode: 'warn'
 
 when@prod:
     framework:
