@@ -88,10 +88,10 @@
             "importmap:install": "symfony-cmd"
         },
         "post-install-cmd": [
-            "php bin/console asset-map:compile"
+            "@auto-scripts"
         ],
         "post-update-cmd": [
-            "php bin/console asset-map:compile"
+            "@auto-scripts"
         ]
     },
     "conflict": {
