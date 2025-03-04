@@ -1,9 +1,9 @@
 framework:
     asset_mapper:
-        # The paths to make available to the asset mapper.
-        paths:
-            - assets/
-        missing_import_mode: strict
+        public_directory: '%kernel.project_dir%/public'
+        cache_dir: '%kernel.cache_dir%/assets'
+        manifest_filename: 'manifest.json'
+
 
 when@prod:
     framework:
