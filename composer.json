@@ -88,7 +88,7 @@
             "importmap:install": "symfony-cmd"
         },
         "post-install-cmd": [
-            "symfony console asset-map:compile"
+            "php bin/console asset-map:compile"
         ],
         "post-update-cmd": [
             "@auto-scripts"
