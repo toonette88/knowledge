@@ -4,12 +4,13 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "amphp/http-client": "4.2.1",
         "doctrine/dbal": "^3",
         "doctrine/doctrine-bundle": "^2.13",
+        "doctrine/doctrine-fixtures-bundle": "^4.0",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
         "dompdf/dompdf": "^3.1",
@@ -87,7 +88,7 @@
             "importmap:install": "symfony-cmd"
         },
         "post-install-cmd": [
-            "@auto-scripts"
+            "php bin/console asset-map:compile"
         ],
         "post-update-cmd": [
             "@auto-scripts"
@@ -103,7 +104,6 @@
         }
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "^4.0",
         "fakerphp/faker": "^1.24",
         "liip/test-fixtures-bundle": "^3.2",
         "phpunit/phpunit": "^9.5",
@@ -112,7 +112,7 @@
         "symfony/css-selector": "^7.0",
         "symfony/debug-bundle": "^7.0",
         "symfony/mailer": "^7.0",
-        "symfony/maker-bundle": "^1.0",
+        "symfony/maker-bundle": "*",
         "symfony/phpunit-bridge": "^7.2",
         "symfony/stopwatch": "^7.0",
         "symfony/web-profiler-bundle": "^7.0"

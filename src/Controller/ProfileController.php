@@ -44,7 +44,7 @@ class ProfileController extends AbstractController
         }
     
         // Get all paid orders for the user
-        $orders = $orderRepository->findBy(['user' => $user, 'status' => 'Paid']);
+        $orders = $orderRepository->findBy(['user' => $user, 'status' => 'Payée']);
     
         $lessons = [];
         $lessonProgressions = [];
