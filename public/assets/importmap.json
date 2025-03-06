@@ -23,28 +23,36 @@
         "path": "\/assets\/styles\/app-m8zFo_2.css",
         "type": "css"
     },
+    "controllers": {
+        "path": "\/assets\/controllers-PuT2gWU.js",
+        "type": "js"
+    },
+    "bootstrap": {
+        "path": "\/assets\/bootstrap-fWNU0-I.js",
+        "type": "js"
+    },
+    "styles\/app": {
+        "path": "\/assets\/styles\/app-m8zFo_2.css",
+        "type": "css"
+    },
     "@symfony\/stimulus-bundle": {
         "path": "\/assets\/@symfony\/stimulus-bundle\/loader-djqeLqa.js",
         "type": "js"
     },
     "@hotwired\/stimulus": {
-        "path": "\/assets\/vendor\/@hotwired\/stimulus\/stimulus.index-oUGxBTh.js",
+        "path": "\/assets\/vendor\/@hotwired\/stimulus\/stimulus.index-gdswxX6.js",
         "type": "js"
     },
     "@hotwired\/turbo": {
-        "path": "\/assets\/vendor\/@hotwired\/turbo\/turbo.index-gQ9E7xo.js",
-        "type": "js"
-    },
-    "bootstrap": {
-        "path": "\/assets\/vendor\/bootstrap\/bootstrap.index-rt72SdS.js",
+        "path": "\/assets\/vendor\/@hotwired\/turbo\/turbo.index-vAyL8yb.js",
         "type": "js"
     },
     "@popperjs\/core": {
-        "path": "\/assets\/vendor\/@popperjs\/core\/core.index-ZE0xRfu.js",
+        "path": "\/assets\/vendor\/@popperjs\/core\/core.index-oK_0kWa.js",
         "type": "js"
     },
     "bootstrap\/dist\/css\/bootstrap.min.css": {
-        "path": "\/assets\/vendor\/bootstrap\/dist\/css\/bootstrap.min-FxLwN4-.css",
+        "path": "\/assets\/vendor\/bootstrap\/dist\/css\/bootstrap.min-Uf7vOMh.css",
         "type": "css"
     }
 }
