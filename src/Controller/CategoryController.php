@@ -53,8 +53,12 @@ final class CategoryController extends AbstractController
 
     // Route to display details of a specific category (accessible via GET request)
     #[Route('/{id}', name: 'app_category_show', methods: ['GET'])]
-    public function show(Category $category): Response
+    public function show(int $id, CategoryRepository $categoryRepository): Response
     {
+        $category = $categoryRepository->find($id);
+        if (!$category) {
+            throw $this->createNotFoundException('Categorie non trouvée');
+        }
         // Render the 'show.html.twig' template, passing the selected category
         return $this->render('category/show.html.twig', [
             'category' => $category,
@@ -63,8 +67,13 @@ final class CategoryController extends AbstractController
 
     // Route to edit an existing category (accessible via GET and POST requests)
     #[Route('/{id}/edit', name: 'app_category_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Category $category, EntityManagerInterface $entityManager): Response
+    public function edit(int $id, Request $request, CategoryRepository $categoryRepository, EntityManagerInterface $entityManager): Response
     {
+        $category = $categoryRepository->find($id);
+        if (!$category) {
+            throw $this->createNotFoundException('Categorie non trouvée');
+        }
+
         // Create the form with the existing category data
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request); // Handle form submission
@@ -86,8 +95,13 @@ final class CategoryController extends AbstractController
 
     // Route to delete an existing category (accessible via POST request)
     #[Route('/{id}', name: 'app_category_delete', methods: ['POST'])]
-    public function delete(Request $request, Category $category, EntityManagerInterface $entityManager): Response
+    public function delete(int $id, Request $request, CategoryRepository $categoryRepository, EntityManagerInterface $entityManager): Response
     {
+        $category = $categoryRepository->find($id);
+        if (!$category) {
+            throw $this->createNotFoundException('Categorie non trouvée');
+        }
+        
         // Check if the CSRF token is valid for the current delete operation
         if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->getPayload()->getString('_token'))) {
             // Remove the category from the database
